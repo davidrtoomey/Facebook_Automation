@@ -1,0 +1,1964 @@
+[
+  {
+    "model": "iPhone 16 Pro Max 256GB Unlocked",
+    "swap": "830",
+    "grade_a": "820",
+    "grade_b": "800",
+    "grade_c": "620",
+    "grade_d": "340",
+    "doa": "200"
+  },
+  {
+    "model": "iPhone 16 Pro Max 512GB Unlocked",
+    "swap": "880",
+    "grade_a": "870",
+    "grade_b": "850",
+    "grade_c": "670",
+    "grade_d": "380",
+    "doa": "200"
+  },
+  {
+    "model": "iPhone 16 Pro Max 1TB Unlocked",
+    "swap": "930",
+    "grade_a": "920",
+    "grade_b": "900",
+    "grade_c": "720",
+    "grade_d": "425",
+    "doa": "200"
+  },
+  {
+    "model": "iPhone 16 Pro Max 256GB Carrier Locked",
+    "swap": "610",
+    "grade_a": "600",
+    "grade_b": "580",
+    "grade_c": "430",
+    "grade_d": "250",
+    "doa": "200"
+  },
+  {
+    "model": "iPhone 16 Pro Max 512GB Carrier Locked",
+    "swap": "660",
+    "grade_a": "650",
+    "grade_b": "630",
+    "grade_c": "480",
+    "grade_d": "270",
+    "doa": "200"
+  },
+  {
+    "model": "iPhone 16 Pro Max 1TB Carrier Locked",
+    "swap": "690",
+    "grade_a": "680",
+    "grade_b": "660",
+    "grade_c": "510",
+    "grade_d": "290",
+    "doa": "200"
+  },
+  {
+    "model": "iPhone 16 Pro 128GB Unlocked",
+    "swap": "705",
+    "grade_a": "695",
+    "grade_b": "675",
+    "grade_c": "525",
+    "grade_d": "275",
+    "doa": "155"
+  },
+  {
+    "model": "iPhone 16 Pro 256GB Unlocked",
+    "swap": "755",
+    "grade_a": "745",
+    "grade_b": "725",
+    "grade_c": "575",
+    "grade_d": "325",
+    "doa": "155"
+  },
+  {
+    "model": "iPhone 16 Pro 512GB Unlocked",
+    "swap": "805",
+    "grade_a": "795",
+    "grade_b": "775",
+    "grade_c": "625",
+    "grade_d": "375",
+    "doa": "155"
+  },
+  {
+    "model": "iPhone 16 Pro 1TB Unlocked",
+    "swap": "835",
+    "grade_a": "825",
+    "grade_b": "805",
+    "grade_c": "655",
+    "grade_d": "405",
+    "doa": "155"
+  },
+  {
+    "model": "iPhone 16 Pro 128GB Carrier Locked",
+    "swap": "460",
+    "grade_a": "450",
+    "grade_b": "430",
+    "grade_c": "255",
+    "grade_d": "190",
+    "doa": "155"
+  },
+  {
+    "model": "iPhone 16 Pro 256GB Carrier Locked",
+    "swap": "500",
+    "grade_a": "490",
+    "grade_b": "470",
+    "grade_c": "295",
+    "grade_d": "215",
+    "doa": "155"
+  },
+  {
+    "model": "iPhone 16 Pro 512GB Carrier Locked",
+    "swap": "535",
+    "grade_a": "525",
+    "grade_b": "505",
+    "grade_c": "330",
+    "grade_d": "235",
+    "doa": "155"
+  },
+  {
+    "model": "iPhone 16 Pro 1TB Carrier Locked",
+    "swap": "580",
+    "grade_a": "570",
+    "grade_b": "550",
+    "grade_c": "375",
+    "grade_d": "250",
+    "doa": "155"
+  },
+  {
+    "model": "iPhone 16 Plus 128GB Unlocked",
+    "swap": "560",
+    "grade_a": "550",
+    "grade_b": "525",
+    "grade_c": "395",
+    "grade_d": "205",
+    "doa": "105"
+  },
+  {
+    "model": "iPhone 16 Plus 256GB Unlocked",
+    "swap": "610",
+    "grade_a": "600",
+    "grade_b": "575",
+    "grade_c": "445",
+    "grade_d": "255",
+    "doa": "105"
+  },
+  {
+    "model": "iPhone 16 Plus 512GB Unlocked",
+    "swap": "635",
+    "grade_a": "625",
+    "grade_b": "600",
+    "grade_c": "470",
+    "grade_d": "280",
+    "doa": "105"
+  },
+  {
+    "model": "iPhone 16 Plus 128GB Carrier Locked",
+    "swap": "345",
+    "grade_a": "335",
+    "grade_b": "325",
+    "grade_c": "225",
+    "grade_d": "130",
+    "doa": "105"
+  },
+  {
+    "model": "iPhone 16 Plus 256GB Carrier Locked",
+    "swap": "390",
+    "grade_a": "380",
+    "grade_b": "370",
+    "grade_c": "270",
+    "grade_d": "150",
+    "doa": "105"
+  },
+  {
+    "model": "iPhone 16 Plus 512GB Carrier Locked",
+    "swap": "420",
+    "grade_a": "410",
+    "grade_b": "400",
+    "grade_c": "300",
+    "grade_d": "170",
+    "doa": "105"
+  },
+  {
+    "model": "iPhone 16 128GB Unlocked",
+    "swap": "520",
+    "grade_a": "510",
+    "grade_b": "490",
+    "grade_c": "360",
+    "grade_d": "175",
+    "doa": "90"
+  },
+  {
+    "model": "iPhone 16 256GB Unlocked",
+    "swap": "560",
+    "grade_a": "550",
+    "grade_b": "530",
+    "grade_c": "400",
+    "grade_d": "215",
+    "doa": "90"
+  },
+  {
+    "model": "iPhone 16 512GB Unlocked",
+    "swap": "585",
+    "grade_a": "575",
+    "grade_b": "555",
+    "grade_c": "425",
+    "grade_d": "240",
+    "doa": "90"
+  },
+  {
+    "model": "iPhone 16 128GB Carrier Locked",
+    "swap": "320",
+    "grade_a": "310",
+    "grade_b": "300",
+    "grade_c": "200",
+    "grade_d": "75",
+    "doa": "90"
+  },
+  {
+    "model": "iPhone 16 256GB Carrier Locked",
+    "swap": "360",
+    "grade_a": "350",
+    "grade_b": "340",
+    "grade_c": "240",
+    "grade_d": "115",
+    "doa": "90"
+  },
+  {
+    "model": "iPhone 16 512GB Carrier Locked",
+    "swap": "385",
+    "grade_a": "375",
+    "grade_b": "365",
+    "grade_c": "265",
+    "grade_d": "140",
+    "doa": "90"
+  },
+  {
+    "model": "iPhone 16E 128GB Unlocked",
+    "swap": "330",
+    "grade_a": "320",
+    "grade_b": "300",
+    "grade_c": "180",
+    "grade_d": "125",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 16E 256GB Unlocked",
+    "swap": "360",
+    "grade_a": "350",
+    "grade_b": "330",
+    "grade_c": "210",
+    "grade_d": "145",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 16E 512GB Unlocked",
+    "swap": "385",
+    "grade_a": "375",
+    "grade_b": "355",
+    "grade_c": "235",
+    "grade_d": "165",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 16E 128GB Carrier Locked",
+    "swap": "195",
+    "grade_a": "185",
+    "grade_b": "170",
+    "grade_c": "100",
+    "grade_d": "75",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 16E 256GB Carrier Locked",
+    "swap": "230",
+    "grade_a": "220",
+    "grade_b": "205",
+    "grade_c": "135",
+    "grade_d": "95",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 16E 512GB Carrier Locked",
+    "swap": "270",
+    "grade_a": "260",
+    "grade_b": "245",
+    "grade_c": "175",
+    "grade_d": "110",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 15 Pro Max 256GB Unlocked",
+    "swap": "660",
+    "grade_a": "650",
+    "grade_b": "630",
+    "grade_c": "450",
+    "grade_d": "280",
+    "doa": "150"
+  },
+  {
+    "model": "iPhone 15 Pro Max 512GB Unlocked",
+    "swap": "685",
+    "grade_a": "675",
+    "grade_b": "655",
+    "grade_c": "475",
+    "grade_d": "305",
+    "doa": "150"
+  },
+  {
+    "model": "iPhone 15 Pro Max 1TB Unlocked",
+    "swap": "705",
+    "grade_a": "695",
+    "grade_b": "675",
+    "grade_c": "495",
+    "grade_d": "325",
+    "doa": "150"
+  },
+  {
+    "model": "iPhone 15 Pro Max 256GB Carrier Locked",
+    "swap": "460",
+    "grade_a": "450",
+    "grade_b": "435",
+    "grade_c": "305",
+    "grade_d": "205",
+    "doa": "150"
+  },
+  {
+    "model": "iPhone 15 Pro Max 512GB Carrier Locked",
+    "swap": "505",
+    "grade_a": "495",
+    "grade_b": "480",
+    "grade_c": "350",
+    "grade_d": "250",
+    "doa": "150"
+  },
+  {
+    "model": "iPhone 15 Pro Max 1TB Carrier Locked",
+    "swap": "530",
+    "grade_a": "520",
+    "grade_b": "505",
+    "grade_c": "375",
+    "grade_d": "275",
+    "doa": "150"
+  },
+  {
+    "model": "iPhone 15 Pro 128GB Unlocked",
+    "swap": "480",
+    "grade_a": "470",
+    "grade_b": "450",
+    "grade_c": "300",
+    "grade_d": "205",
+    "doa": "115"
+  },
+  {
+    "model": "iPhone 15 Pro 256GB Unlocked",
+    "swap": "500",
+    "grade_a": "490",
+    "grade_b": "470",
+    "grade_c": "320",
+    "grade_d": "225",
+    "doa": "115"
+  },
+  {
+    "model": "iPhone 15 Pro 512GB Unlocked",
+    "swap": "520",
+    "grade_a": "510",
+    "grade_b": "490",
+    "grade_c": "340",
+    "grade_d": "245",
+    "doa": "115"
+  },
+  {
+    "model": "iPhone 15 Pro 1TB Unlocked",
+    "swap": "540",
+    "grade_a": "530",
+    "grade_b": "510",
+    "grade_c": "360",
+    "grade_d": "265",
+    "doa": "115"
+  },
+  {
+    "model": "iPhone 15 Pro 128GB Carrier Locked",
+    "swap": "355",
+    "grade_a": "345",
+    "grade_b": "330",
+    "grade_c": "210",
+    "grade_d": "160",
+    "doa": "115"
+  },
+  {
+    "model": "iPhone 15 Pro 256GB Carrier Locked",
+    "swap": "395",
+    "grade_a": "385",
+    "grade_b": "370",
+    "grade_c": "250",
+    "grade_d": "200",
+    "doa": "115"
+  },
+  {
+    "model": "iPhone 15 Pro 512GB Carrier Locked",
+    "swap": "405",
+    "grade_a": "395",
+    "grade_b": "380",
+    "grade_c": "260",
+    "grade_d": "210",
+    "doa": "115"
+  },
+  {
+    "model": "iPhone 15 Pro 1TB Carrier Locked",
+    "swap": "425",
+    "grade_a": "415",
+    "grade_b": "400",
+    "grade_c": "280",
+    "grade_d": "230",
+    "doa": "115"
+  },
+  {
+    "model": "iPhone 15 Plus 128GB Unlocked",
+    "swap": "450",
+    "grade_a": "440",
+    "grade_b": "420",
+    "grade_c": "295",
+    "grade_d": "210",
+    "doa": "95"
+  },
+  {
+    "model": "iPhone 15 Plus 256GB Unlocked",
+    "swap": "470",
+    "grade_a": "460",
+    "grade_b": "440",
+    "grade_c": "315",
+    "grade_d": "230",
+    "doa": "95"
+  },
+  {
+    "model": "iPhone 15 Plus 512GB Unlocked",
+    "swap": "490",
+    "grade_a": "480",
+    "grade_b": "460",
+    "grade_c": "335",
+    "grade_d": "250",
+    "doa": "95"
+  },
+  {
+    "model": "iPhone 15 Plus 128GB Carrier Locked",
+    "swap": "280",
+    "grade_a": "270",
+    "grade_b": "255",
+    "grade_c": "155",
+    "grade_d": "105",
+    "doa": "95"
+  },
+  {
+    "model": "iPhone 15 Plus 256GB Carrier Locked",
+    "swap": "305",
+    "grade_a": "295",
+    "grade_b": "280",
+    "grade_c": "180",
+    "grade_d": "130",
+    "doa": "95"
+  },
+  {
+    "model": "iPhone 15 Plus 512GB Carrier Locked",
+    "swap": "335",
+    "grade_a": "325",
+    "grade_b": "310",
+    "grade_c": "210",
+    "grade_d": "160",
+    "doa": "95"
+  },
+  {
+    "model": "iPhone 15 128GB Unlocked",
+    "swap": "405",
+    "grade_a": "395",
+    "grade_b": "375",
+    "grade_c": "275",
+    "grade_d": "170",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 15 256GB Unlocked",
+    "swap": "425",
+    "grade_a": "415",
+    "grade_b": "395",
+    "grade_c": "295",
+    "grade_d": "190",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 15 512GB Unlocked",
+    "swap": "445",
+    "grade_a": "435",
+    "grade_b": "415",
+    "grade_c": "315",
+    "grade_d": "210",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 15 128GB Carrier Locked",
+    "swap": "240",
+    "grade_a": "230",
+    "grade_b": "215",
+    "grade_c": "115",
+    "grade_d": "80",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 15 256GB Carrier Locked",
+    "swap": "285",
+    "grade_a": "275",
+    "grade_b": "260",
+    "grade_c": "160",
+    "grade_d": "100",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 15 512GB Carrier Locked",
+    "swap": "310",
+    "grade_a": "300",
+    "grade_b": "285",
+    "grade_c": "185",
+    "grade_d": "125",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 14 Pro Max 128GB Unlocked",
+    "swap": "435",
+    "grade_a": "425",
+    "grade_b": "410",
+    "grade_c": "270",
+    "grade_d": "180",
+    "doa": "110"
+  },
+  {
+    "model": "iPhone 14 Pro Max 256GB Unlocked",
+    "swap": "455",
+    "grade_a": "445",
+    "grade_b": "430",
+    "grade_c": "290",
+    "grade_d": "200",
+    "doa": "110"
+  },
+  {
+    "model": "iPhone 14 Pro Max 512GB Unlocked",
+    "swap": "475",
+    "grade_a": "465",
+    "grade_b": "450",
+    "grade_c": "310",
+    "grade_d": "220",
+    "doa": "110"
+  },
+  {
+    "model": "iPhone 14 Pro Max 1TB Unlocked",
+    "swap": "495",
+    "grade_a": "485",
+    "grade_b": "470",
+    "grade_c": "330",
+    "grade_d": "240",
+    "doa": "110"
+  },
+  {
+    "model": "iPhone 14 Pro Max 128GB Carrier Locked",
+    "swap": "340",
+    "grade_a": "330",
+    "grade_b": "320",
+    "grade_c": "220",
+    "grade_d": "120",
+    "doa": "110"
+  },
+  {
+    "model": "iPhone 14 Pro Max 256GB Carrier Locked",
+    "swap": "360",
+    "grade_a": "350",
+    "grade_b": "335",
+    "grade_c": "235",
+    "grade_d": "135",
+    "doa": "110"
+  },
+  {
+    "model": "iPhone 14 Pro Max 512GB Carrier Locked",
+    "swap": "380",
+    "grade_a": "370",
+    "grade_b": "350",
+    "grade_c": "250",
+    "grade_d": "150",
+    "doa": "110"
+  },
+  {
+    "model": "iPhone 14 Pro Max 1TB Carrier Locked",
+    "swap": "400",
+    "grade_a": "390",
+    "grade_b": "370",
+    "grade_c": "270",
+    "grade_d": "170",
+    "doa": "110"
+  },
+  {
+    "model": "iPhone 14 Pro 128GB Unlocked",
+    "swap": "355",
+    "grade_a": "345",
+    "grade_b": "330",
+    "grade_c": "220",
+    "grade_d": "120",
+    "doa": "70"
+  },
+  {
+    "model": "iPhone 14 Pro 256GB Unlocked",
+    "swap": "375",
+    "grade_a": "365",
+    "grade_b": "350",
+    "grade_c": "240",
+    "grade_d": "140",
+    "doa": "70"
+  },
+  {
+    "model": "iPhone 14 Pro 512GB Unlocked",
+    "swap": "395",
+    "grade_a": "385",
+    "grade_b": "370",
+    "grade_c": "260",
+    "grade_d": "160",
+    "doa": "70"
+  },
+  {
+    "model": "iPhone 14 Pro 1TB Unlocked",
+    "swap": "415",
+    "grade_a": "405",
+    "grade_b": "390",
+    "grade_c": "280",
+    "grade_d": "180",
+    "doa": "70"
+  },
+  {
+    "model": "iPhone 14 Pro 128GB Carrier Locked",
+    "swap": "255",
+    "grade_a": "245",
+    "grade_b": "235",
+    "grade_c": "145",
+    "grade_d": "70",
+    "doa": "70"
+  },
+  {
+    "model": "iPhone 14 Pro 256GB Carrier Locked",
+    "swap": "290",
+    "grade_a": "280",
+    "grade_b": "265",
+    "grade_c": "175",
+    "grade_d": "75",
+    "doa": "70"
+  },
+  {
+    "model": "iPhone 14 Pro 512GB Carrier Locked",
+    "swap": "310",
+    "grade_a": "300",
+    "grade_b": "285",
+    "grade_c": "195",
+    "grade_d": "95",
+    "doa": "70"
+  },
+  {
+    "model": "iPhone 14 Pro 1TB Carrier Locked",
+    "swap": "330",
+    "grade_a": "320",
+    "grade_b": "305",
+    "grade_c": "215",
+    "grade_d": "115",
+    "doa": "70"
+  },
+  {
+    "model": "iPhone 14 Plus 128GB Unlocked",
+    "swap": "330",
+    "grade_a": "320",
+    "grade_b": "310",
+    "grade_c": "180",
+    "grade_d": "85",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 14 Plus 256GB Unlocked",
+    "swap": "350",
+    "grade_a": "340",
+    "grade_b": "330",
+    "grade_c": "200",
+    "grade_d": "105",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 14 Plus 512GB Unlocked",
+    "swap": "360",
+    "grade_a": "350",
+    "grade_b": "340",
+    "grade_c": "210",
+    "grade_d": "115",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 14 Plus 128GB Carrier Locked",
+    "swap": "185",
+    "grade_a": "175",
+    "grade_b": "165",
+    "grade_c": "85",
+    "grade_d": "60",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 14 Plus 256GB Carrier Locked",
+    "swap": "195",
+    "grade_a": "185",
+    "grade_b": "175",
+    "grade_c": "95",
+    "grade_d": "60",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 14 Plus 512GB Carrier Locked",
+    "swap": "205",
+    "grade_a": "195",
+    "grade_b": "185",
+    "grade_c": "105",
+    "grade_d": "60",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 14 128GB Unlocked",
+    "swap": "250",
+    "grade_a": "240",
+    "grade_b": "230",
+    "grade_c": "110",
+    "grade_d": "35",
+    "doa": "50"
+  },
+  {
+    "model": "iPhone 14 256GB Unlocked",
+    "swap": "275",
+    "grade_a": "265",
+    "grade_b": "250",
+    "grade_c": "130",
+    "grade_d": "55",
+    "doa": "50"
+  },
+  {
+    "model": "iPhone 14 512GB Unlocked",
+    "swap": "290",
+    "grade_a": "280",
+    "grade_b": "265",
+    "grade_c": "145",
+    "grade_d": "70",
+    "doa": "50"
+  },
+  {
+    "model": "iPhone 14 128GB Carrier Locked",
+    "swap": "150",
+    "grade_a": "150",
+    "grade_b": "145",
+    "grade_c": "65",
+    "grade_d": "55",
+    "doa": "50"
+  },
+  {
+    "model": "iPhone 14 256GB Carrier Locked",
+    "swap": "165",
+    "grade_a": "165",
+    "grade_b": "160",
+    "grade_c": "80",
+    "grade_d": "65",
+    "doa": "50"
+  },
+  {
+    "model": "iPhone 14 512GB Carrier Locked",
+    "swap": "175",
+    "grade_a": "175",
+    "grade_b": "170",
+    "grade_c": "90",
+    "grade_d": "65",
+    "doa": "50"
+  },
+  {
+    "model": "iPhone 13 Pro Max 128GB Unlocked",
+    "swap": "380",
+    "grade_a": "370",
+    "grade_b": "355",
+    "grade_c": "245",
+    "grade_d": "145",
+    "doa": "85"
+  },
+  {
+    "model": "iPhone 13 Pro Max 256GB Unlocked",
+    "swap": "400",
+    "grade_a": "390",
+    "grade_b": "375",
+    "grade_c": "265",
+    "grade_d": "165",
+    "doa": "85"
+  },
+  {
+    "model": "iPhone 13 Pro Max 512GB Unlocked",
+    "swap": "415",
+    "grade_a": "405",
+    "grade_b": "390",
+    "grade_c": "280",
+    "grade_d": "180",
+    "doa": "85"
+  },
+  {
+    "model": "iPhone 13 Pro Max 1TB Unlocked",
+    "swap": "430",
+    "grade_a": "420",
+    "grade_b": "405",
+    "grade_c": "295",
+    "grade_d": "195",
+    "doa": "85"
+  },
+  {
+    "model": "iPhone 13 Pro Max 128GB Carrier Locked",
+    "swap": "235",
+    "grade_a": "230",
+    "grade_b": "220",
+    "grade_c": "130",
+    "grade_d": "105",
+    "doa": "85"
+  },
+  {
+    "model": "iPhone 13 Pro Max 256GB Carrier Locked",
+    "swap": "255",
+    "grade_a": "250",
+    "grade_b": "240",
+    "grade_c": "150",
+    "grade_d": "95",
+    "doa": "85"
+  },
+  {
+    "model": "iPhone 13 Pro Max 512GB Carrier Locked",
+    "swap": "270",
+    "grade_a": "265",
+    "grade_b": "255",
+    "grade_c": "165",
+    "grade_d": "85",
+    "doa": "85"
+  },
+  {
+    "model": "iPhone 13 Pro Max 1TB Carrier Locked",
+    "swap": "280",
+    "grade_a": "275",
+    "grade_b": "265",
+    "grade_c": "175",
+    "grade_d": "95",
+    "doa": "85"
+  },
+  {
+    "model": "iPhone 13 Pro 128GB Unlocked",
+    "swap": "320",
+    "grade_a": "310",
+    "grade_b": "300",
+    "grade_c": "210",
+    "grade_d": "130",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 13 Pro 256GB Unlocked",
+    "swap": "340",
+    "grade_a": "330",
+    "grade_b": "320",
+    "grade_c": "230",
+    "grade_d": "150",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 13 Pro 512GB Unlocked",
+    "swap": "360",
+    "grade_a": "350",
+    "grade_b": "340",
+    "grade_c": "250",
+    "grade_d": "170",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 13 Pro 1TB Unlocked",
+    "swap": "370",
+    "grade_a": "360",
+    "grade_b": "350",
+    "grade_c": "260",
+    "grade_d": "180",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 13 Pro 128GB Carrier Locked",
+    "swap": "195",
+    "grade_a": "190",
+    "grade_b": "180",
+    "grade_c": "105",
+    "grade_d": "55",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 13 Pro 256GB Carrier Locked",
+    "swap": "215",
+    "grade_a": "210",
+    "grade_b": "200",
+    "grade_c": "125",
+    "grade_d": "75",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 13 Pro 512GB Carrier Locked",
+    "swap": "225",
+    "grade_a": "220",
+    "grade_b": "210",
+    "grade_c": "135",
+    "grade_d": "85",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 13 Pro 1TB Carrier Locked",
+    "swap": "235",
+    "grade_a": "230",
+    "grade_b": "220",
+    "grade_c": "145",
+    "grade_d": "95",
+    "doa": "65"
+  },
+  {
+    "model": "iPhone 13 128GB Unlocked",
+    "swap": "220",
+    "grade_a": "210",
+    "grade_b": "200",
+    "grade_c": "120",
+    "grade_d": "95",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 13 256GB Unlocked",
+    "swap": "240",
+    "grade_a": "230",
+    "grade_b": "220",
+    "grade_c": "140",
+    "grade_d": "95",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 13 512GB Unlocked",
+    "swap": "250",
+    "grade_a": "240",
+    "grade_b": "230",
+    "grade_c": "150",
+    "grade_d": "95",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 13 128GB Carrier Locked",
+    "swap": "145",
+    "grade_a": "145",
+    "grade_b": "135",
+    "grade_c": "75",
+    "grade_d": "65",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 13 256GB Carrier Locked",
+    "swap": "150",
+    "grade_a": "150",
+    "grade_b": "140",
+    "grade_c": "80",
+    "grade_d": "65",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 13 512GB Carrier Locked",
+    "swap": "155",
+    "grade_a": "155",
+    "grade_b": "145",
+    "grade_c": "85",
+    "grade_d": "65",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 13 Mini 128GB Unlocked",
+    "swap": "200",
+    "grade_a": "190",
+    "grade_b": "175",
+    "grade_c": "105",
+    "grade_d": "45",
+    "doa": "40"
+  },
+  {
+    "model": "iPhone 13 Mini 256GB Unlocked",
+    "swap": "210",
+    "grade_a": "200",
+    "grade_b": "185",
+    "grade_c": "115",
+    "grade_d": "55",
+    "doa": "40"
+  },
+  {
+    "model": "iPhone 13 Mini 512GB Unlocked",
+    "swap": "220",
+    "grade_a": "210",
+    "grade_b": "195",
+    "grade_c": "125",
+    "grade_d": "65",
+    "doa": "40"
+  },
+  {
+    "model": "iPhone 13 Mini 128GB Carrier Locked",
+    "swap": "120",
+    "grade_a": "110",
+    "grade_b": "100",
+    "grade_c": "50",
+    "grade_d": "35",
+    "doa": "40"
+  },
+  {
+    "model": "iPhone 13 Mini 256GB Carrier Locked",
+    "swap": "125",
+    "grade_a": "115",
+    "grade_b": "105",
+    "grade_c": "55",
+    "grade_d": "40",
+    "doa": "40"
+  },
+  {
+    "model": "iPhone 13 Mini 512GB Carrier Locked",
+    "swap": "130",
+    "grade_a": "120",
+    "grade_b": "110",
+    "grade_c": "60",
+    "grade_d": "45",
+    "doa": "40"
+  },
+  {
+    "model": "iPhone SE (3rd Gen) 64GB Unlocked",
+    "swap": "90",
+    "grade_a": "80",
+    "grade_b": "70",
+    "grade_c": "25",
+    "grade_d": "15",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone SE (3rd Gen) 128GB Unlocked",
+    "swap": "100",
+    "grade_a": "90",
+    "grade_b": "80",
+    "grade_c": "35",
+    "grade_d": "25",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone SE (3rd Gen) 256GB Unlocked",
+    "swap": "110",
+    "grade_a": "100",
+    "grade_b": "90",
+    "grade_c": "45",
+    "grade_d": "35",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone SE (3rd Gen) 64GB Carrier Locked",
+    "swap": "40",
+    "grade_a": "40",
+    "grade_b": "40",
+    "grade_c": "15",
+    "grade_d": "15",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone SE (3rd Gen) 128GB Carrier Locked",
+    "swap": "40",
+    "grade_a": "40",
+    "grade_b": "40",
+    "grade_c": "15",
+    "grade_d": "15",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone SE (3rd Gen) 256GB Carrier Locked",
+    "swap": "40",
+    "grade_a": "40",
+    "grade_b": "40",
+    "grade_c": "15",
+    "grade_d": "15",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone 12 Pro Max 128GB Unlocked",
+    "swap": "300",
+    "grade_a": "290",
+    "grade_b": "275",
+    "grade_c": "190",
+    "grade_d": "95",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 12 Pro Max 256GB Unlocked",
+    "swap": "320",
+    "grade_a": "310",
+    "grade_b": "295",
+    "grade_c": "210",
+    "grade_d": "115",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 12 Pro Max 512GB Unlocked",
+    "swap": "335",
+    "grade_a": "325",
+    "grade_b": "310",
+    "grade_c": "225",
+    "grade_d": "130",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 12 Pro Max 128GB Carrier Locked",
+    "swap": "175",
+    "grade_a": "175",
+    "grade_b": "170",
+    "grade_c": "85",
+    "grade_d": "70",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 12 Pro Max 256GB Carrier Locked",
+    "swap": "185",
+    "grade_a": "185",
+    "grade_b": "180",
+    "grade_c": "95",
+    "grade_d": "80",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 12 Pro Max 512GB Carrier Locked",
+    "swap": "190",
+    "grade_a": "190",
+    "grade_b": "185",
+    "grade_c": "100",
+    "grade_d": "85",
+    "doa": "60"
+  },
+  {
+    "model": "iPhone 12 Pro 128GB Unlocked",
+    "swap": "245",
+    "grade_a": "235",
+    "grade_b": "225",
+    "grade_c": "155",
+    "grade_d": "105",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 12 Pro 256GB Unlocked",
+    "swap": "260",
+    "grade_a": "250",
+    "grade_b": "240",
+    "grade_c": "170",
+    "grade_d": "120",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 12 Pro 512GB Unlocked",
+    "swap": "275",
+    "grade_a": "265",
+    "grade_b": "255",
+    "grade_c": "185",
+    "grade_d": "135",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 12 Pro 128GB Carrier Locked",
+    "swap": "140",
+    "grade_a": "140",
+    "grade_b": "135",
+    "grade_c": "65",
+    "grade_d": "45",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 12 Pro 256GB Carrier Locked",
+    "swap": "145",
+    "grade_a": "145",
+    "grade_b": "140",
+    "grade_c": "70",
+    "grade_d": "50",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 12 Pro 512GB Carrier Locked",
+    "swap": "150",
+    "grade_a": "150",
+    "grade_b": "145",
+    "grade_c": "75",
+    "grade_d": "55",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 12 64GB Unlocked",
+    "swap": "160",
+    "grade_a": "150",
+    "grade_b": "140",
+    "grade_c": "85",
+    "grade_d": "45",
+    "doa": "35"
+  },
+  {
+    "model": "iPhone 12 128GB Unlocked",
+    "swap": "175",
+    "grade_a": "165",
+    "grade_b": "155",
+    "grade_c": "100",
+    "grade_d": "60",
+    "doa": "35"
+  },
+  {
+    "model": "iPhone 12 256GB Unlocked",
+    "swap": "185",
+    "grade_a": "175",
+    "grade_b": "165",
+    "grade_c": "110",
+    "grade_d": "70",
+    "doa": "35"
+  },
+  {
+    "model": "iPhone 12 64GB Carrier Locked",
+    "swap": "105",
+    "grade_a": "105",
+    "grade_b": "100",
+    "grade_c": "55",
+    "grade_d": "40",
+    "doa": "35"
+  },
+  {
+    "model": "iPhone 12 128GB Carrier Locked",
+    "swap": "110",
+    "grade_a": "110",
+    "grade_b": "105",
+    "grade_c": "60",
+    "grade_d": "45",
+    "doa": "35"
+  },
+  {
+    "model": "iPhone 12 256GB Carrier Locked",
+    "swap": "115",
+    "grade_a": "115",
+    "grade_b": "110",
+    "grade_c": "65",
+    "grade_d": "50",
+    "doa": "35"
+  },
+  {
+    "model": "iPhone 12 Mini 64GB Unlocked",
+    "swap": "140",
+    "grade_a": "130",
+    "grade_b": "120",
+    "grade_c": "70",
+    "grade_d": "35",
+    "doa": "30"
+  },
+  {
+    "model": "iPhone 12 Mini 128GB Unlocked",
+    "swap": "155",
+    "grade_a": "145",
+    "grade_b": "135",
+    "grade_c": "75",
+    "grade_d": "50",
+    "doa": "30"
+  },
+  {
+    "model": "iPhone 12 Mini 256GB Unlocked",
+    "swap": "165",
+    "grade_a": "155",
+    "grade_b": "140",
+    "grade_c": "80",
+    "grade_d": "55",
+    "doa": "30"
+  },
+  {
+    "model": "iPhone 12 Mini 64GB Carrier Locked",
+    "swap": "70",
+    "grade_a": "70",
+    "grade_b": "70",
+    "grade_c": "25",
+    "grade_d": "35",
+    "doa": "30"
+  },
+  {
+    "model": "iPhone 12 Mini 128GB Carrier Locked",
+    "swap": "75",
+    "grade_a": "75",
+    "grade_b": "75",
+    "grade_c": "30",
+    "grade_d": "35",
+    "doa": "30"
+  },
+  {
+    "model": "iPhone 12 Mini 256GB Carrier Locked",
+    "swap": "80",
+    "grade_a": "80",
+    "grade_b": "80",
+    "grade_c": "35",
+    "grade_d": "35",
+    "doa": "30"
+  },
+  {
+    "model": "iPhone 11 Pro Max 64GB Unlocked",
+    "swap": "210",
+    "grade_a": "200",
+    "grade_b": "190",
+    "grade_c": "110",
+    "grade_d": "45",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 11 Pro Max 256GB Unlocked",
+    "swap": "225",
+    "grade_a": "215",
+    "grade_b": "205",
+    "grade_c": "125",
+    "grade_d": "60",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 11 Pro Max 512GB Unlocked",
+    "swap": "235",
+    "grade_a": "225",
+    "grade_b": "215",
+    "grade_c": "135",
+    "grade_d": "70",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 11 Pro Max 64GB Carrier Locked",
+    "swap": "100",
+    "grade_a": "100",
+    "grade_b": "100",
+    "grade_c": "50",
+    "grade_d": "50",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 11 Pro Max 256GB Carrier Locked",
+    "swap": "115",
+    "grade_a": "115",
+    "grade_b": "110",
+    "grade_c": "60",
+    "grade_d": "50",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 11 Pro Max 512GB Carrier Locked",
+    "swap": "120",
+    "grade_a": "120",
+    "grade_b": "115",
+    "grade_c": "65",
+    "grade_d": "50",
+    "doa": "45"
+  },
+  {
+    "model": "iPhone 11 Pro 64GB Unlocked",
+    "swap": "185",
+    "grade_a": "175",
+    "grade_b": "165",
+    "grade_c": "85",
+    "grade_d": "25",
+    "doa": "28"
+  },
+  {
+    "model": "iPhone 11 Pro 256GB Unlocked",
+    "swap": "205",
+    "grade_a": "195",
+    "grade_b": "185",
+    "grade_c": "105",
+    "grade_d": "45",
+    "doa": "28"
+  },
+  {
+    "model": "iPhone 11 Pro 512GB Unlocked",
+    "swap": "215",
+    "grade_a": "205",
+    "grade_b": "195",
+    "grade_c": "115",
+    "grade_d": "55",
+    "doa": "28"
+  },
+  {
+    "model": "iPhone 11 Pro 64GB Carrier Locked",
+    "swap": "90",
+    "grade_a": "90",
+    "grade_b": "85",
+    "grade_c": "40",
+    "grade_d": "0",
+    "doa": "28"
+  },
+  {
+    "model": "iPhone 11 Pro 256GB Carrier Locked",
+    "swap": "90",
+    "grade_a": "90",
+    "grade_b": "90",
+    "grade_c": "45",
+    "grade_d": "0",
+    "doa": "28"
+  },
+  {
+    "model": "iPhone 11 Pro 512GB Carrier Locked",
+    "swap": "95",
+    "grade_a": "95",
+    "grade_b": "95",
+    "grade_c": "50",
+    "grade_d": "0",
+    "doa": "28"
+  },
+  {
+    "model": "iPhone 11 64GB Unlocked",
+    "swap": "130",
+    "grade_a": "120",
+    "grade_b": "110",
+    "grade_c": "50",
+    "grade_d": "20",
+    "doa": "20"
+  },
+  {
+    "model": "iPhone 11 128GB Unlocked",
+    "swap": "145",
+    "grade_a": "135",
+    "grade_b": "125",
+    "grade_c": "65",
+    "grade_d": "35",
+    "doa": "20"
+  },
+  {
+    "model": "iPhone 11 256GB Unlocked",
+    "swap": "155",
+    "grade_a": "145",
+    "grade_b": "135",
+    "grade_c": "75",
+    "grade_d": "45",
+    "doa": "20"
+  },
+  {
+    "model": "iPhone 11 64GB Carrier Locked",
+    "swap": "70",
+    "grade_a": "70",
+    "grade_b": "70",
+    "grade_c": "30",
+    "grade_d": "20",
+    "doa": "20"
+  },
+  {
+    "model": "iPhone 11 128GB Carrier Locked",
+    "swap": "75",
+    "grade_a": "75",
+    "grade_b": "75",
+    "grade_c": "35",
+    "grade_d": "25",
+    "doa": "20"
+  },
+  {
+    "model": "iPhone 11 256GB Carrier Locked",
+    "swap": "80",
+    "grade_a": "80",
+    "grade_b": "80",
+    "grade_c": "40",
+    "grade_d": "30",
+    "doa": "20"
+  },
+  {
+    "model": "SE (2020) 64GB Unlocked",
+    "swap": "65",
+    "grade_a": "60",
+    "grade_b": "55",
+    "grade_c": "25",
+    "grade_d": "20",
+    "doa": "5"
+  },
+  {
+    "model": "SE (2020) 128GB Unlocked",
+    "swap": "70",
+    "grade_a": "65",
+    "grade_b": "60",
+    "grade_c": "25",
+    "grade_d": "25",
+    "doa": "5"
+  },
+  {
+    "model": "SE (2020) 256GB Unlocked",
+    "swap": "75",
+    "grade_a": "70",
+    "grade_b": "65",
+    "grade_c": "30",
+    "grade_d": "25",
+    "doa": "5"
+  },
+  {
+    "model": "SE (2020) 64GB Carrier Locked",
+    "swap": "25",
+    "grade_a": "25",
+    "grade_b": "20",
+    "grade_c": "10",
+    "grade_d": "7",
+    "doa": "5"
+  },
+  {
+    "model": "SE (2020) 128GB Carrier Locked",
+    "swap": "25",
+    "grade_a": "25",
+    "grade_b": "20",
+    "grade_c": "10",
+    "grade_d": "7",
+    "doa": "5"
+  },
+  {
+    "model": "SE (2020) 256GB Carrier Locked",
+    "swap": "25",
+    "grade_a": "25",
+    "grade_b": "20",
+    "grade_c": "10",
+    "grade_d": "7",
+    "doa": "5"
+  },
+  {
+    "model": "iPhone XS Max 64GB Unlocked",
+    "swap": "155",
+    "grade_a": "145",
+    "grade_b": "135",
+    "grade_c": "75",
+    "grade_d": "55",
+    "doa": "15"
+  },
+  {
+    "model": "iPhone XS Max 256GB Unlocked",
+    "swap": "165",
+    "grade_a": "155",
+    "grade_b": "145",
+    "grade_c": "85",
+    "grade_d": "65",
+    "doa": "15"
+  },
+  {
+    "model": "iPhone XS Max 512GB Unlocked",
+    "swap": "170",
+    "grade_a": "160",
+    "grade_b": "150",
+    "grade_c": "90",
+    "grade_d": "70",
+    "doa": "15"
+  },
+  {
+    "model": "iPhone XS Max 64GB Carrier Locked",
+    "swap": "75",
+    "grade_a": "70",
+    "grade_b": "65",
+    "grade_c": "20",
+    "grade_d": "15",
+    "doa": "15"
+  },
+  {
+    "model": "iPhone XS Max 256GB Carrier Locked",
+    "swap": "80",
+    "grade_a": "75",
+    "grade_b": "70",
+    "grade_c": "25",
+    "grade_d": "20",
+    "doa": "15"
+  },
+  {
+    "model": "iPhone XS Max 512GB Carrier Locked",
+    "swap": "85",
+    "grade_a": "80",
+    "grade_b": "75",
+    "grade_c": "30",
+    "grade_d": "25",
+    "doa": "15"
+  },
+  {
+    "model": "iPhone XS 64GB Unlocked",
+    "swap": "130",
+    "grade_a": "120",
+    "grade_b": "110",
+    "grade_c": "60",
+    "grade_d": "50",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone XS 256GB Unlocked",
+    "swap": "140",
+    "grade_a": "130",
+    "grade_b": "120",
+    "grade_c": "70",
+    "grade_d": "60",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone XS 512GB Unlocked",
+    "swap": "150",
+    "grade_a": "140",
+    "grade_b": "130",
+    "grade_c": "80",
+    "grade_d": "70",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone XS 64GB Carrier Locked",
+    "swap": "60",
+    "grade_a": "55",
+    "grade_b": "50",
+    "grade_c": "15",
+    "grade_d": "15",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone XS 256GB Carrier Locked",
+    "swap": "60",
+    "grade_a": "55",
+    "grade_b": "55",
+    "grade_c": "20",
+    "grade_d": "20",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone XS 512GB Carrier Locked",
+    "swap": "60",
+    "grade_a": "55",
+    "grade_b": "55",
+    "grade_c": "20",
+    "grade_d": "20",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone XR 64GB Unlocked",
+    "swap": "120",
+    "grade_a": "110",
+    "grade_b": "100",
+    "grade_c": "50",
+    "grade_d": "35",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone XR 128GB Unlocked",
+    "swap": "130",
+    "grade_a": "120",
+    "grade_b": "110",
+    "grade_c": "60",
+    "grade_d": "45",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone XR 256GB Unlocked",
+    "swap": "140",
+    "grade_a": "130",
+    "grade_b": "120",
+    "grade_c": "70",
+    "grade_d": "55",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone XR 64GB Carrier Locked",
+    "swap": "50",
+    "grade_a": "45",
+    "grade_b": "45",
+    "grade_c": "15",
+    "grade_d": "10",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone XR 128GB Carrier Locked",
+    "swap": "60",
+    "grade_a": "55",
+    "grade_b": "50",
+    "grade_c": "20",
+    "grade_d": "15",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone XR 256GB Carrier Locked",
+    "swap": "60",
+    "grade_a": "55",
+    "grade_b": "50",
+    "grade_c": "20",
+    "grade_d": "15",
+    "doa": "10"
+  },
+  {
+    "model": "iPhone X 64GB Unlocked",
+    "swap": "115",
+    "grade_a": "105",
+    "grade_b": "95",
+    "grade_c": "55",
+    "grade_d": "45",
+    "doa": "8"
+  },
+  {
+    "model": "iPhone X 256GB Unlocked",
+    "swap": "125",
+    "grade_a": "115",
+    "grade_b": "105",
+    "grade_c": "65",
+    "grade_d": "55",
+    "doa": "8"
+  },
+  {
+    "model": "iPhone X 64GB Carrier Locked",
+    "swap": "50",
+    "grade_a": "45",
+    "grade_b": "45",
+    "grade_c": "20",
+    "grade_d": "15",
+    "doa": "8"
+  },
+  {
+    "model": "iPhone X 256GB Carrier Locked",
+    "swap": "50",
+    "grade_a": "45",
+    "grade_b": "45",
+    "grade_c": "20",
+    "grade_d": "15",
+    "doa": "8"
+  },
+  {
+    "model": "iPhone 8 Plus 64GB Unlocked",
+    "swap": "80",
+    "grade_a": "70",
+    "grade_b": "65",
+    "grade_c": "35",
+    "grade_d": "20",
+    "doa": "7"
+  },
+  {
+    "model": "iPhone 8 Plus 128GB Unlocked",
+    "swap": "95",
+    "grade_a": "85",
+    "grade_b": "75",
+    "grade_c": "45",
+    "grade_d": "30",
+    "doa": "7"
+  },
+  {
+    "model": "iPhone 8 Plus 256GB Unlocked",
+    "swap": "100",
+    "grade_a": "90",
+    "grade_b": "80",
+    "grade_c": "50",
+    "grade_d": "35",
+    "doa": "7"
+  },
+  {
+    "model": "iPhone 8 Plus 64GB Carrier Locked",
+    "swap": "40",
+    "grade_a": "35",
+    "grade_b": "35",
+    "grade_c": "10",
+    "grade_d": "10",
+    "doa": "7"
+  },
+  {
+    "model": "iPhone 8 Plus 128GB Carrier Locked",
+    "swap": "40",
+    "grade_a": "35",
+    "grade_b": "35",
+    "grade_c": "10",
+    "grade_d": "10",
+    "doa": "7"
+  },
+  {
+    "model": "iPhone 8 Plus 256GB Carrier Locked",
+    "swap": "40",
+    "grade_a": "35",
+    "grade_b": "35",
+    "grade_c": "10",
+    "grade_d": "10",
+    "doa": "7"
+  },
+  {
+    "model": "iPhone 8 64GB Unlocked",
+    "swap": "55",
+    "grade_a": "50",
+    "grade_b": "45",
+    "grade_c": "25",
+    "grade_d": "20",
+    "doa": "6"
+  },
+  {
+    "model": "iPhone 8 128GB Unlocked",
+    "swap": "65",
+    "grade_a": "60",
+    "grade_b": "50",
+    "grade_c": "25",
+    "grade_d": "20",
+    "doa": "6"
+  },
+  {
+    "model": "iPhone 8 256GB Unlocked",
+    "swap": "65",
+    "grade_a": "60",
+    "grade_b": "55",
+    "grade_c": "25",
+    "grade_d": "20",
+    "doa": "6"
+  },
+  {
+    "model": "iPhone 8 64GB Carrier Locked",
+    "swap": "25",
+    "grade_a": "25",
+    "grade_b": "25",
+    "grade_c": "12",
+    "grade_d": "10",
+    "doa": "6"
+  },
+  {
+    "model": "iPhone 8 128GB Carrier Locked",
+    "swap": "25",
+    "grade_a": "25",
+    "grade_b": "25",
+    "grade_c": "12",
+    "grade_d": "10",
+    "doa": "6"
+  },
+  {
+    "model": "iPhone 8 256GB Carrier Locked",
+    "swap": "25",
+    "grade_a": "25",
+    "grade_b": "25",
+    "grade_c": "12",
+    "grade_d": "10",
+    "doa": "6"
+  },
+  {
+    "model": "iPhone 7 Plus 32GB Unlocked",
+    "swap": "50",
+    "grade_a": "45",
+    "grade_b": "45",
+    "grade_c": "30",
+    "grade_d": "25",
+    "doa": "4"
+  },
+  {
+    "model": "iPhone 7 Plus 128GB Unlocked",
+    "swap": "55",
+    "grade_a": "50",
+    "grade_b": "50",
+    "grade_c": "30",
+    "grade_d": "25",
+    "doa": "4"
+  },
+  {
+    "model": "iPhone 7 Plus 256GB Unlocked",
+    "swap": "60",
+    "grade_a": "55",
+    "grade_b": "55",
+    "grade_c": "30",
+    "grade_d": "25",
+    "doa": "4"
+  },
+  {
+    "model": "iPhone 7 Plus 32GB Carrier Locked",
+    "swap": "15",
+    "grade_a": "15",
+    "grade_b": "15",
+    "grade_c": "10",
+    "grade_d": "10",
+    "doa": "4"
+  },
+  {
+    "model": "iPhone 7 Plus 128GB Carrier Locked",
+    "swap": "15",
+    "grade_a": "15",
+    "grade_b": "15",
+    "grade_c": "10",
+    "grade_d": "10",
+    "doa": "4"
+  },
+  {
+    "model": "iPhone 7 Plus 256GB Carrier Locked",
+    "swap": "15",
+    "grade_a": "15",
+    "grade_b": "15",
+    "grade_c": "10",
+    "grade_d": "10",
+    "doa": "4"
+  },
+  {
+    "model": "iPhone 7 32GB Unlocked",
+    "swap": "40",
+    "grade_a": "35",
+    "grade_b": "30",
+    "grade_c": "10",
+    "grade_d": "8",
+    "doa": "3"
+  },
+  {
+    "model": "iPhone 7 128GB Unlocked",
+    "swap": "45",
+    "grade_a": "40",
+    "grade_b": "35",
+    "grade_c": "10",
+    "grade_d": "8",
+    "doa": "3"
+  },
+  {
+    "model": "iPhone 7 256GB Unlocked",
+    "swap": "50",
+    "grade_a": "45",
+    "grade_b": "40",
+    "grade_c": "10",
+    "grade_d": "8",
+    "doa": "3"
+  },
+  {
+    "model": "iPhone 7 32GB Carrier Locked",
+    "swap": "10",
+    "grade_a": "10",
+    "grade_b": "10",
+    "grade_c": "5",
+    "grade_d": "3",
+    "doa": "3"
+  },
+  {
+    "model": "iPhone 7 128GB Carrier Locked",
+    "swap": "10",
+    "grade_a": "10",
+    "grade_b": "10",
+    "grade_c": "5",
+    "grade_d": "3",
+    "doa": "3"
+  },
+  {
+    "model": "iPhone 7 256GB Carrier Locked",
+    "swap": "10",
+    "grade_a": "10",
+    "grade_b": "10",
+    "grade_c": "5",
+    "grade_d": "3",
+    "doa": "3"
+  },
+  {
+    "model": "iPhone 6S Plus Unlocked (Clean)",
+    "swap": "45",
+    "grade_a": "35",
+    "grade_b": "30",
+    "grade_c": "10",
+    "grade_d": "10",
+    "doa": "1"
+  },
+  {
+    "model": "iPhone 6S Plus Carrier Locked ~ CLEAN",
+    "swap": "5",
+    "grade_a": "5",
+    "grade_b": "5",
+    "grade_c": "5",
+    "grade_d": "1",
+    "doa": "1"
+  },
+  {
+    "model": "iPhone 6S Unlocked (Clean)",
+    "swap": "30",
+    "grade_a": "25",
+    "grade_b": "20",
+    "grade_c": "5",
+    "grade_d": "5",
+    "doa": "1"
+  },
+  {
+    "model": "iPhone 6S Carrier Locked ~ CLEAN",
+    "swap": "3",
+    "grade_a": "3",
+    "grade_b": "3",
+    "grade_c": "3",
+    "grade_d": "1",
+    "doa": "1"
+  }
+]

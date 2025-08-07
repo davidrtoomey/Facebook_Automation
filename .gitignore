@@ -1,0 +1,58 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+.ruff_cache
+.claude
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*/__pycache__/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+listings.json
+messages.json
+conversation_tracker.py
+
+# GUI build files
+gui/frontend/node_modules/
+gui/frontend/build/
+gui/backend/static/
+node_modules/
+.git_old/
+
+# User configuration (contains API keys)
+~/.marketplace-bot/
