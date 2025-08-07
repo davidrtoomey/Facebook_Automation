@@ -24,24 +24,6 @@ if not search_products:
 all_products_config = search_products
 print(f"✅ Loaded {len(all_products_config)} configured products")
 
-# Extract pricing from first product or defaults
-first_product = all_products_config[0] if all_products_config else {}
-base_offer_unlocked = first_product.get('base_offer_unlocked', int(os.getenv('BASE_OFFER_UNLOCKED', '300')))
-base_offer_locked = first_product.get('base_offer_locked', int(os.getenv('BASE_OFFER_LOCKED', '250')))
-base_offer_unlocked_damaged = first_product.get('base_offer_unlocked_damaged', int(os.getenv('BASE_OFFER_UNLOCKED_DAMAGED', '150')))
-base_offer_locked_damaged = first_product.get('base_offer_locked_damaged', int(os.getenv('BASE_OFFER_LOCKED_DAMAGED', '100')))
-price_flexibility = int(get_config_value('price_flexibility') or os.getenv('PRICE_FLEXIBILITY', '20'))
-
-# Config summary (simplified)
-print("=" * 60)
-print("🔧 CONFIGURATION SUMMARY")
-print("=" * 60)
-print(f"🎯 Products: {', '.join(p.get('name', str(p)) for p in all_products_config)}")
-print(f"💰 Default pricing - Unlocked: ${base_offer_unlocked}, Locked: ${base_offer_locked}")
-print(f"🔧 Damaged pricing - Unlocked: ${base_offer_unlocked_damaged}, Locked: ${base_offer_locked_damaged}")
-print(f"📊 Price flexibility: ${price_flexibility}")
-print("✅ Configuration validation passed" if api_key else "❌ Missing API key")
-print("=" * 60)
 
 if not api_key:
     raise ValueError("Gemini API key required")
