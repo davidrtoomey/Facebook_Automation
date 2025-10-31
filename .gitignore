@@ -56,3 +56,6 @@ node_modules/
 
 # User configuration (contains API keys)
 ~/.marketplace-bot/
+listings.json.bak
+marketplace_automation.db
+old_CLAUDE.md
