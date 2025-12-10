@@ -23,6 +23,19 @@ executable_path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ### 🐧 Linux Users
 The default configuration assumes `chromium` is installed at `/usr/bin/chromium`. If you use Google Chrome or a different path, please update the files listed above.
 
+## 🔑 License and Configuration
+
+To run the program, you will need a license key. For testing purposes, you can use the default test key:
+
+**Default License Key:** `TEST-1234-5678-9ABC`
+
+### Configuration Storage
+All configuration files, including your Gemini API key and License key, are stored locally in your home directory:
+
+- **Directory:** `~/.marketplace-bot/`
+- **Config File:** `~/.marketplace-bot/config.json` (Stores Gemini API Key and settings)
+- **License File:** `~/.marketplace-bot/license.json` (Stores License Key)
+
 ## 🚀 Quick Start Guide
 
 ### Prerequisites
