@@ -15,7 +15,7 @@ search_keywords = (
     os.getenv("SEARCH_KEYWORDS", "").split(",") if os.getenv("SEARCH_KEYWORDS") else []
 )
 
-llm = ChatGoogle(model="gemini-2.5-pro-preview-05-06", api_key=api_key)
+llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
 
 browser_profile = BrowserProfile(
     executable_path="/usr/bin/chromium",

@@ -24,7 +24,7 @@ api_key = get_gemini_api_key()
 
 # Create LLM using the browser-use compatible approach - using faster model for URL extraction
 # llm = ChatGoogle(model="gemini-2.5-pro-preview-05-06", api_key=api_key)
-llm = ChatGoogle(model="gemini-2.5-flash-lite", api_key=api_key)
+llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
 
 
 browser_profile = BrowserProfile(

@@ -15,7 +15,7 @@ api_key = get_gemini_api_key()
 print("Starting Google Sheets pricing scraper...")
 
 # Use faster model for scraping
-llm = ChatGoogle(model="gemini-2.5-flash-lite", api_key=api_key)
+llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
 
 browser_profile = BrowserProfile(
     executable_path="/usr/bin/chromium",

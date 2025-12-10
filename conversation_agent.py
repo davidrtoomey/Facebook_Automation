@@ -37,7 +37,7 @@ print(f"Price flexibility: ${price_flexibility}")
 
 # Use browser-use compatible LLM
 # llm = ChatGoogle(model="gemini-2.5-pro-preview-05-06", api_key=api_key)
-llm = ChatGoogle(model="gemini-2.5-flash-lite", api_key=api_key)
+llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
 
 
 browser_profile = BrowserProfile(

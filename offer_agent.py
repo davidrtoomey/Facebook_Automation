@@ -30,7 +30,6 @@ if not api_key:
     raise ValueError("Gemini API key required")
 
 llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
-# llm = ChatGoogle(model="gemini-2.5-flash-lite", api_key=api_key)
 browser_profile = BrowserProfile(
     executable_path="/usr/bin/chromium",
     user_data_dir="/home/david/.config/browseruse/profiles/agent",
