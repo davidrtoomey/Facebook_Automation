@@ -1,7 +1,7 @@
 # from langchain_google_genai import GoogleGenerativeAI
 from browser_use.llm import ChatGoogle
 from browser_use import Agent
-from browser_use.browser.browser import BrowserProfile, BrowserSession
+from browser_use.browser import BrowserProfile, BrowserSession
 from dotenv import load_dotenv
 import os
 import asyncio
@@ -9,7 +9,13 @@ import re
 import json
 from datetime import datetime
 from typing import List
-from models import ConversationModel, MessagesData, load_messages_json, save_messages_json, extract_message_id_from_url
+from models import (
+    ConversationModel,
+    MessagesData,
+    load_messages_json,
+    save_messages_json,
+    extract_message_id_from_url,
+)
 from utils.config_loader import get_gemini_api_key, get_config_value, load_full_config
 
 load_dotenv()
@@ -22,12 +28,12 @@ llm = ChatGoogle(model="gemini-2.5-flash-lite", api_key=api_key)
 
 
 browser_profile = BrowserProfile(
-    executable_path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    user_data_dir="~/.config/browseruse/profiles/agent",
-    headless=True,
+    executable_path="/usr/bin/chromium",
+    user_data_dir="/home/david/.config/browseruse/profiles/agent",
+    headless=os.getenv("HEADLESS_CONVERSATIONS", "false").lower() == "true",
     keep_alive=True,
     # Security: Restrict to Facebook domains only - prevent clicking external links
-    allowed_domains=['facebook.com', 'www.facebook.com', 'm.facebook.com'],
+    allowed_domains=["facebook.com", "www.facebook.com", "m.facebook.com"],
 )
 
 
@@ -48,7 +54,7 @@ def add_urls_to_messages_json(urls: List[str]) -> MessagesData:
         if url not in existing_urls:
             # Extract message ID from URL
             message_id = extract_message_id_from_url(url)
-            
+
             # Create new conversation entry with expanded model
             # Only populate the essential fields, leaving others as None/default
             new_conv = ConversationModel(
@@ -72,7 +78,9 @@ async def get_marketplace_urls(agent):
     print("\n🔍 Getting marketplace URLs with explicit address bar instructions...")
 
     # First make sure we're in the marketplace filter using specific CSS selector information
-    agent.add_new_task("""Use click_element_by_index with index 44 to click on Marketplace in the left sidebar. You are not trying to go to facebook.com/marketplace. You are trying to open Marketplaces messages in facebook.com/messages. click element 44 and don't do anything I don't explicity tell you to do.""")
+    agent.add_new_task(
+        """Use click_element_by_index with index 44 to click on Marketplace in the left sidebar. You are not trying to go to facebook.com/marketplace. You are trying to open Marketplaces messages in facebook.com/messages. click element 44 and don't do anything I don't explicity tell you to do."""
+    )
     filter_result = await agent.run()
     filter_result_str = str(filter_result)
 
@@ -209,7 +217,7 @@ IMPORTANT NOTES:
                 # Last resort: extract any URL that looks like a Facebook message URL
                 # More precise pattern to avoid capturing extra text
                 last_resort_pattern = (
-                    r'(https?://(?:www\.)?facebook\.com/messages/t/[^"'\s\n<>/]+/?)'
+                    r'(https?://(?:www\.)?facebook\.com/messages/t/[^"\'\s\n<>/]+/?)'
                 )
                 last_resort_urls = re.findall(last_resort_pattern, final_result_str)
 
@@ -224,20 +232,22 @@ IMPORTANT NOTES:
     for index, url in matches:
         # Clean the URL and add to list - remove any trailing markers or newlines
         clean_url = url.strip()
-        
+
         # Remove any embedded markers that might have been captured
-        clean_url = re.sub(r'\\n.*?CONVERSATION_URL_END.*$', '', clean_url)
-        clean_url = re.sub(r'\s*CONVERSATION_URL_END.*$', '', clean_url)
+        clean_url = re.sub(r"\\n.*?CONVERSATION_URL_END.*$", "", clean_url)
+        clean_url = re.sub(r"\s*CONVERSATION_URL_END.*$", "", clean_url)
         clean_url = clean_url.strip()
-        
+
         print(
             f"DEBUG: Processing URL {index}: {clean_url[:50]}{'...' if len(clean_url) > 50 else ''}"
         )
 
         # Final validation - ensure URL is properly formatted and doesn't contain any markers
         # Match only properly formatted Facebook message URLs
-        valid_url_pattern = r'^https?://(?:www\.)?facebook\.com/messages/t/[^/\s\n"\'<>]+/?$'
-        
+        valid_url_pattern = (
+            r'^https?://(?:www\.)?facebook\.com/messages/t/[^/\s\n"\'<>]+/?$'
+        )
+
         if re.match(valid_url_pattern, clean_url):
             # URL is properly formatted, add it to the list
             print(f"DEBUG: Valid URL format: {clean_url}")
@@ -254,13 +264,13 @@ IMPORTANT NOTES:
                 urls.append(extracted_url)
             else:
                 print(f"DEBUG: Invalid URL format, skipping: {clean_url}")
-                
+
         # Check if the URL is a relative path
         if clean_url.startswith("/messages/t/"):
             # Convert relative URL to absolute URL
             absolute_url = f"https://www.facebook.com{clean_url}"
             print(f"DEBUG: Converted relative URL to: {absolute_url}")
-            
+
             # Validate the converted URL
             if re.match(valid_url_pattern, absolute_url):
                 urls.append(absolute_url)
@@ -311,7 +321,7 @@ async def main():
             print("\nNo URLs to save to messages.json")
 
     finally:
-        await browser_session.close()
+        await browser_session.stop()
 
 
 if __name__ == "__main__":

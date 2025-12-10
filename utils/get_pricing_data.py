@@ -1,4 +1,4 @@
-from browser_use import Agent 
+from browser_use import Agent
 from browser_use.browser.browser import BrowserProfile, BrowserSession
 from browser_use.llm import ChatGoogle
 from dotenv import load_dotenv
@@ -18,35 +18,37 @@ print("Starting Google Sheets pricing scraper...")
 llm = ChatGoogle(model="gemini-2.5-flash-lite", api_key=api_key)
 
 browser_profile = BrowserProfile(
-    executable_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    user_data_dir='~/.config/browseruse/profiles/agent',
+    executable_path="/usr/bin/chromium",
+    user_data_dir="/home/david/.config/browseruse/profiles/agent",
     headless=False,  # Changed to False to avoid bot detection
     keep_alive=True,
     chrome_args=[
-        '--disable-blink-features=AutomationControlled',
-        '--disable-web-security',
-        '--disable-features=VizDisplayCompositor',
-        '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-    ]
+        "--disable-blink-features=AutomationControlled",
+        "--disable-web-security",
+        "--disable-features=VizDisplayCompositor",
+        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    ],
 )
+
 
 def check_pricing_cache():
     """Check if we have valid cached pricing data from the last 12 hours"""
     cache_path = os.path.expanduser("~/.marketplace-bot/pricing_cache.json")
-    
+
     try:
         if not os.path.exists(cache_path):
             return False
-            
-        with open(cache_path, 'r') as f:
+
+        with open(cache_path, "r") as f:
             cache_data = json.load(f)
-        
+
         # Check if cache is within last 12 hours
         from datetime import datetime
-        cache_time = datetime.fromisoformat(cache_data.get('timestamp', ''))
+
+        cache_time = datetime.fromisoformat(cache_data.get("timestamp", ""))
         now = datetime.now()
         hours_diff = (now - cache_time).total_seconds() / 3600
-        
+
         if hours_diff <= 12:
             print(f"📦 Found valid pricing cache from {hours_diff:.1f} hours ago")
             print("✅ Skipping price fetch - using cached data")
@@ -54,34 +56,35 @@ def check_pricing_cache():
         else:
             print(f"⏰ Cache is {hours_diff:.1f} hours old, fetching fresh data")
             return False
-            
+
     except Exception as e:
         print(f"⚠️ Error checking cache: {e}")
         return False
 
+
 async def main():
     print("🚀 Starting pricing data extraction...")
-    
+
     # Check if we have recent cached data
     if check_pricing_cache():
         print("🎉 Pricing data is already up to date!")
         return
-    
+
     # Google Sheets URL
     sheet_url = "https://docs.google.com/spreadsheets/d/1pu4Adxq4MGB6Qour0k__4gBdgnggWRoSVYnJUKgxzEw/edit?gid=0#gid=0"
-    
+
     browser_session = BrowserSession(browser_profile=browser_profile)
-    
+
     try:
         # Initialize main agent
         agent = Agent(
-            task=f"Navigate to Google Sheets and extract iPhone pricing data", 
-            llm=llm, 
-            browser_session=browser_session
+            task=f"Navigate to Google Sheets and extract iPhone pricing data",
+            llm=llm,
+            browser_session=browser_session,
         )
-        
+
         print("🌐 Navigating to Google Sheets...")
-        
+
         # Navigate and scrape pricing data
         agent.add_new_task(f"""Navigate to this Google Sheets URL and extract ALL iPhone pricing data: {sheet_url}
 
@@ -138,52 +141,67 @@ Return a complete JSON array with EVERY SINGLE iPhone model from the spreadsheet
 
 VERIFICATION: Before responding, scroll through the entire spreadsheet and count ALL iPhone models. Extract every single one you can find. There should be dozens of different iPhone models with various storage sizes and generations. Do not stop extracting until you've reached the bottom of the spreadsheet.
 """)
-        
+
         print("📊 Running pricing extraction...")
         result = await agent.run()
-        
+
         if result.is_successful:
             print("✅ Pricing extraction completed!")
-            
+
             # Extract JSON data from the agent's final message
-            final_message = result.final_result() if hasattr(result, 'final_result') else str(result)
+            final_message = (
+                result.final_result()
+                if hasattr(result, "final_result")
+                else str(result)
+            )
             print(f"Agent response: {final_message}")
-            
+
             # Try to extract JSON from the response
             try:
                 # Look for JSON array in the response
                 import re
-                json_match = re.search(r'\[.*\]', final_message, re.DOTALL)
+
+                json_match = re.search(r"\[.*\]", final_message, re.DOTALL)
                 if json_match:
                     json_data = json_match.group(0)
-                    
+
                     # Clean dollar signs from the JSON data before parsing
-                    json_data = json_data.replace('"$', '"').replace('$', '')
+                    json_data = json_data.replace('"$', '"').replace("$", "")
                     # Additional cleaning for various dollar sign formats
-                    json_data = re.sub(r'"\$(\d+)"', r'"\1"', json_data)  # "$123" -> "123"
-                    json_data = re.sub(r':\s*"\$(\d+)"', r': "\1"', json_data)  # : "$123" -> : "123"
-                    
+                    json_data = re.sub(
+                        r'"\$(\d+)"', r'"\1"', json_data
+                    )  # "$123" -> "123"
+                    json_data = re.sub(
+                        r':\s*"\$(\d+)"', r': "\1"', json_data
+                    )  # : "$123" -> : "123"
+
                     # Validate and parse the JSON
                     parsed_data = json.loads(json_data)
-                    
+
                     # Save raw data to project directory for reference
-                    output_path = "/Users/macbook/Documents/code/buse-test/pricing_data_raw.json"
-                    with open(output_path, 'w') as f:
+                    output_path = (
+                        "/Users/macbook/Documents/code/buse-test/pricing_data_raw.json"
+                    )
+                    with open(output_path, "w") as f:
                         json.dump(parsed_data, f, indent=2)
-                    
-                    print(f"✅ Successfully saved {len(parsed_data)} iPhone models to {output_path}")
-                    
+
+                    print(
+                        f"✅ Successfully saved {len(parsed_data)} iPhone models to {output_path}"
+                    )
+
                     # Update marketplace-bot config with pricing data and margins
                     print("📊 Updating marketplace-bot configuration...")
                     success = update_pricing_data(parsed_data, margin_percent=20.0)
                     if success:
-                        print("✅ Marketplace-bot configuration updated with 20% margin")
+                        print(
+                            "✅ Marketplace-bot configuration updated with 20% margin"
+                        )
                     else:
                         print("❌ Failed to update marketplace-bot configuration")
                 else:
                     print("⚠️ No JSON array found in agent response")
                     print("Raw response:", final_message)
-                    
+
             except json.JSONDecodeError as e:
                 print(f"❌ Failed to parse JSON: {e}")
                 print("Raw response:", final_message)
@@ -193,12 +211,13 @@ VERIFICATION: Before responding, scroll through the entire spreadsheet and count
         else:
             print("❌ Pricing extraction failed")
             print(f"Result: {result}")
-            
+
     except Exception as e:
         print(f"❌ Error during extraction: {e}")
-    
+
     finally:
-        await browser_session.close()
+        await browser_session.stop()
+
 
 if __name__ == "__main__":
     asyncio.run(main())
