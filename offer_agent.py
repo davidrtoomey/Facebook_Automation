@@ -117,20 +117,168 @@ async def process_single_url(browser_session, listing_item, index):
         desc = re.search(r"desc:\s*(.+?)(?:\n|$)", result, re.IGNORECASE)
         desc = desc.group(1).strip() if desc else ""
 
-        # Prioritize user configuration from environment variables
-        base_offer_unlocked_str = os.getenv("BASE_OFFER_UNLOCKED")
+        # Determine pricing strategy
         offer = None
 
-        if base_offer_unlocked_str:
-            print("  💰 Using user-defined configuration for pricing")
-            base_offer_unlocked = float(base_offer_unlocked_str)
-            base_offer_locked = float(os.getenv("BASE_OFFER_LOCKED", "250"))
-            base_offer_unlocked_damaged = float(
-                os.getenv("BASE_OFFER_UNLOCKED_DAMAGED", "150")
+        # 1. Try Product-Specific Configuration (from GUI)
+        product_name = listing_item.get("product") or listing_item.get(
+            "matched_product"
+        )
+        product_config = None
+
+        # Reload config to ensure we have latest settings
+        current_config = load_full_config() or {}
+        search_products_config = current_config.get("search_products", [])
+
+        if product_name:
+            product_name_lower = str(product_name).lower().strip()
+            # Find matching product config (case-insensitive)
+            for p in search_products_config:
+                if (
+                    isinstance(p, dict)
+                    and str(p.get("name", "")).lower().strip() == product_name_lower
+                ):
+                    product_config = p
+                    print(
+                        f"  ✅ Found specific config for product: {product_config.get('name')}"
+                    )
+                    break
+
+        # If no specific product match, but we have a single configured product, use that as fallback
+        if (
+            not product_config
+            and len(search_products_config) == 1
+            and isinstance(search_products_config[0], dict)
+        ):
+            product_config = search_products_config[0]
+            print(
+                f"  ℹ️  Using single configured product as fallback: {product_config.get('name')}"
             )
-            base_offer_locked_damaged = float(
-                os.getenv("BASE_OFFER_LOCKED_DAMAGED", "100")
+
+        if product_config:
+            # Safely extract prices with defaults
+            try:
+                base_offer_unlocked = float(
+                    product_config.get("base_offer_unlocked") or 300
+                )
+                base_offer_locked = float(
+                    product_config.get("base_offer_locked") or 250
+                )
+                base_offer_unlocked_damaged = float(
+                    product_config.get("base_offer_unlocked_damaged") or 150
+                )
+                base_offer_locked_damaged = float(
+                    product_config.get("base_offer_locked_damaged") or 100
+                )
+
+                print(
+                    f"  💰 Pricing loaded: Unlocked=${base_offer_unlocked}, Locked=${base_offer_locked}"
+                )
+            except (ValueError, TypeError) as e:
+                print(f"  ⚠️ Error parsing pricing config: {e}. Using defaults.")
+                base_offer_unlocked = 300.0
+                base_offer_locked = 250.0
+                base_offer_unlocked_damaged = 150.0
+                base_offer_locked_damaged = 100.0
+
+            # Logic to determine price based on keywords
+            text = (title + " " + desc).lower()
+
+            # Improved lock detection
+            is_locked = (
+                any(
+                    x in text
+                    for x in [
+                        "locked",
+                        "verizon",
+                        "att",
+                        "t-mobile",
+                        "sprint",
+                        "carrier lock",
+                        "sim lock",
+                    ]
+                )
+                and "unlocked" not in text
             )
+
+            # Improved damage detection with negation handling
+            damage_keywords = [
+                "crack",
+                "damaged",
+                "broken",
+                "parts",
+                "bad lcd",
+                "screen issue",
+                "scratch",
+            ]
+
+            # Check for negation phrases that indicate good condition
+            negation_patterns = [
+                "no scratch",
+                "no crack",
+                "no damage",
+                "no dent",
+                "no ding",
+                "not damaged",
+                "not broken",
+                "without scratch",
+                "without crack",
+                "without damage",
+                "never been replaced",
+                "excellent condition",
+                "good condition",
+                "great condition",
+                "mint condition",
+                "like new",
+            ]
+
+            # If negation patterns are found, likely NOT damaged
+            has_negation = any(neg in text for neg in negation_patterns)
+
+            # Check for damage keywords
+            has_damage_keywords = any(kw in text for kw in damage_keywords)
+
+            # Only flag as damaged if damage keywords found WITHOUT strong negation
+            is_damaged = has_damage_keywords and not has_negation
+
+            if is_locked:
+                price = base_offer_locked_damaged if is_damaged else base_offer_locked
+                print(
+                    f"  🔒 Detected LOCKED status (Damaged: {is_damaged}) -> Offer: ${price}"
+                )
+            else:
+                price = (
+                    base_offer_unlocked_damaged if is_damaged else base_offer_unlocked
+                )
+                print(
+                    f"  🔓 Detected UNLOCKED status (Damaged: {is_damaged}) -> Offer: ${price}"
+                )
+
+            offer = {
+                "offer_price": int(price),
+                "grade": "grade_d" if is_damaged else "grade_b",
+                "is_unlocked": not is_locked,
+            }
+
+        # 2. Fallback to Environment Variables (Legacy/Docker)
+        elif os.getenv("BASE_OFFER_UNLOCKED"):
+            print("  💰 Using environment variable configuration for pricing")
+            try:
+                base_offer_unlocked_str = os.getenv("BASE_OFFER_UNLOCKED")
+                base_offer_unlocked = float(base_offer_unlocked_str or "300")
+                base_offer_locked = float(os.getenv("BASE_OFFER_LOCKED") or "250")
+                base_offer_unlocked_damaged = float(
+                    os.getenv("BASE_OFFER_UNLOCKED_DAMAGED") or "150"
+                )
+                base_offer_locked_damaged = float(
+                    os.getenv("BASE_OFFER_LOCKED_DAMAGED") or "100"
+                )
+            except (ValueError, TypeError) as e:
+                print(f"  ⚠️ Error parsing env var pricing: {e}. Using defaults.")
+                base_offer_unlocked = 300.0
+                base_offer_locked = 250.0
+                base_offer_unlocked_damaged = 150.0
+                base_offer_locked_damaged = 100.0
 
             # Logic to determine price based on keywords
             text = (title + " " + desc).lower()
@@ -141,9 +289,18 @@ async def process_single_url(browser_session, listing_item, index):
                 )
                 and "unlocked" not in text
             )
-            is_damaged = any(
-                x in text for x in ["crack", "damaged", "broken", "parts", "bad lcd"]
-            )
+
+            # Damage detection with negation handling
+            damage_keywords = ["crack", "damaged", "broken", "parts", "bad lcd", "scratch"]
+            negation_patterns = [
+                "no scratch", "no crack", "no damage", "no dent", "no ding",
+                "not damaged", "not broken", "without scratch", "without crack",
+                "without damage", "excellent condition", "good condition",
+                "great condition", "mint condition", "like new"
+            ]
+            has_negation = any(neg in text for neg in negation_patterns)
+            has_damage_keywords = any(kw in text for kw in damage_keywords)
+            is_damaged = has_damage_keywords and not has_negation
 
             if is_locked:
                 price = base_offer_locked_damaged if is_damaged else base_offer_locked

@@ -124,26 +124,29 @@ def build_frontend():
 def start_backend():
     """Start the FastAPI backend"""
     print("\n🚀 Starting Marketplace Bot GUI...")
-    
+
     backend_dir = Path(__file__).parent / "gui" / "backend"
     main_file = backend_dir / "main.py"
-    
+
     if main_file.exists():
         print("🌐 Backend will be available at: http://localhost:8000")
         print("📱 React frontend will be served from: http://localhost:8000")
         print("🔌 WebSocket endpoint: ws://localhost:8000/ws/{client_id}")
         print("\n💡 The browser will open automatically in a few seconds...")
         print("🛑 Press Ctrl+C to stop the server\n")
-        
-        # Use uv to run the backend
-        success, output = run_command([
-            'uv', 'run', 'python', str(main_file)
-        ])
-        
-        if not success:
-            print("✗ Failed to start backend")
+
+        # Use uv to run the backend - don't capture output, let it run in foreground
+        try:
+            subprocess.run([
+                'uv', 'run', 'python', str(main_file)
+            ], check=True)
+        except KeyboardInterrupt:
+            print("\n🛑 Server stopped by user")
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"✗ Failed to start backend: {e}")
             return False
-            
+
     else:
         print("✗ main.py not found in gui/backend directory")
         return False

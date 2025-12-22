@@ -30,41 +30,50 @@ class ConfigManager:
             print(f"DEBUG: Attempting to save config with keys: {list(config.keys())}")
             print(f"DEBUG: gemini_api_key value: '{config.get('gemini_api_key', 'NOT_PROVIDED')}'")
             print(f"DEBUG: gemini_api_key type: {type(config.get('gemini_api_key'))}")
-            
+            print(f"DEBUG: search_products value: {config.get('search_products', 'NOT_PROVIDED')}")
+
             # Validate configuration
-            automation_config = AutomationConfig(**config)
+            try:
+                automation_config = AutomationConfig(**config)
+            except Exception as validation_error:
+                print(f"DEBUG: Pydantic validation FAILED")
+                print(f"DEBUG: Validation error details: {validation_error}")
+                raise Exception(f"Configuration validation failed: {validation_error}")
+
             print(f"DEBUG: Pydantic validation successful")
             print(f"DEBUG: Validated gemini_api_key: '{automation_config.gemini_api_key}'")
-            
+
             # Load existing config to preserve pricing data
             existing_config = {}
             if os.path.exists(self.config_file):
                 with open(self.config_file, 'r') as f:
                     existing_config = json.load(f)
-            
+
             # Merge new config with existing, preserving pricing manager data
             merged_config = existing_config.copy()
             merged_config.update(automation_config.dict())
-            
+
             # Preserve pricing manager fields if they exist
             pricing_fields = ['base_prices', 'offer_prices', 'margin_percent', 'last_updated', 'pricing_count']
             for field in pricing_fields:
                 if field in existing_config:
                     merged_config[field] = existing_config[field]
                     print(f"DEBUG: Preserved pricing field '{field}'")
-            
+
             # Save merged config to file
             with open(self.config_file, 'w') as f:
                 json.dump(merged_config, f, indent=2)
-            
+
             print(f"DEBUG: Configuration saved to {self.config_file} (pricing data preserved)")
-            
+
             # Set file permissions
             os.chmod(self.config_file, 0o600)
-            
+
         except Exception as e:
             print(f"DEBUG: Config save failed with error: {e}")
             print(f"DEBUG: Error type: {type(e)}")
+            import traceback
+            print(f"DEBUG: Full traceback:\n{traceback.format_exc()}")
             raise Exception(f"Failed to save configuration: {e}")
     
     def get_config(self) -> Dict[str, Any]:

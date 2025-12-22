@@ -365,19 +365,40 @@ async def test_configuration(config: dict):
 @app.post("/api/automation/start")
 async def start_automation(config: dict, background_tasks: BackgroundTasks):
     """Start automation with user configuration"""
+    print("\n" + "="*50)
+    print("🔥 /api/automation/start endpoint called")
+    print("="*50)
     try:
+        print("📋 Received config keys:", list(config.keys()))
+        print("🔑 Checking license validity...")
+
         # Validate license first
-        if not config_manager.is_license_valid():
+        license_valid = config_manager.is_license_valid()
+        print(f"✅ License valid: {license_valid}")
+
+        if not license_valid:
+            print("❌ License validation failed!")
             raise HTTPException(status_code=401, detail="Invalid or expired license")
-        
+
+        print("💾 Saving configuration...")
         # Save configuration
         config_manager.save_config(config)
-        
+        print("✅ Configuration saved successfully")
+
         # Start automation in background
+        print("🚀 Starting automation in background...")
         background_tasks.add_task(run_automation, config)
-        
+
+        print("✅ Automation started successfully")
         return {"message": "Automation started successfully"}
+    except HTTPException:
+        print("⚠️ HTTP Exception raised, re-raising...")
+        raise
     except Exception as e:
+        print(f"❌ ERROR in start_automation endpoint: {e}")
+        print(f"❌ Error type: {type(e)}")
+        import traceback
+        print(f"❌ Traceback:\n{traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/automation/stop")
