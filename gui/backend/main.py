@@ -439,26 +439,45 @@ async def run_offers_only(request: dict, background_tasks: BackgroundTasks):
 @app.post("/api/automation/run-conversations")
 async def run_conversations_only(request: dict, background_tasks: BackgroundTasks):
     """Run only the conversation agent script"""
+    print("[API] /api/automation/run-conversations endpoint called")
     try:
         # Validate license first
+        print("[API] Checking license validity...")
         if not config_manager.is_license_valid():
+            print("[API] License validation FAILED")
             raise HTTPException(status_code=401, detail="Invalid or expired license")
-        
+        print("[API] License is valid")
+
         # Extract config and headless setting
         config = request.get("config", {})
         headless_conversations = request.get("headless_conversations", False)
-        
+        print(f"[API] Config received: gemini_api_key={'SET' if config.get('gemini_api_key') else 'MISSING'}")
+        print(f"[API] Headless conversations: {headless_conversations}")
+
         # Add headless setting to config for persistence
         config["headless_conversations"] = headless_conversations
-        
+
+        # Skip URL extraction by default for conversation-only mode (uses existing conversations)
+        # This makes the negotiation agent start immediately instead of scanning for new conversations
+        config["skip_url_extraction"] = config.get("skip_url_extraction", True)
+        print(f"[API] Skip URL extraction: {config['skip_url_extraction']}")
+
         # Save configuration
         config_manager.save_config(config)
-        
+        print("[API] Config saved")
+
         # Start conversation agent in background
+        print("[API] Adding background task for conversation automation...")
         background_tasks.add_task(run_conversations_automation, config)
-        
+
+        print("[API] Background task added successfully")
         return {"message": "Conversation agent started successfully"}
+    except HTTPException:
+        raise
     except Exception as e:
+        print(f"[API] ERROR: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/automation/scrape-listings")
@@ -611,10 +630,17 @@ async def get_detailed_negotiations():
                 if message_history:
                     last_from = "You" if message_history[-1].get("from") == "us" else "Seller"
                 
+                # Handle None values safely
+                last_message = conv.get("last_message") or "No messages"
+                seller_name = conv.get("seller_name") or "Unknown"
+                product_name = conv.get("product_name") or "Unknown"
+
                 formatted_conversations.append({
-                    "message_id": message_id[:12],  # Truncate for display
+                    "message_id": message_id[:12] if message_id else "N/A",
+                    "seller_name": seller_name,
+                    "product_name": product_name[:40] + "..." if len(product_name) > 40 else product_name,
                     "status": conv.get("status", "unknown").replace("_", " ").title(),
-                    "last_message": conv.get("last_message", "No messages")[:60] + ("..." if len(conv.get("last_message", "")) > 60 else ""),
+                    "last_message": last_message[:60] + ("..." if len(last_message) > 60 else ""),
                     "last_from": last_from,
                     "message_count": message_count,
                     "last_updated": conv.get("last_updated", "N/A")[:19].replace("T", " ") if conv.get("last_updated") else "N/A",
@@ -628,6 +654,114 @@ async def get_detailed_negotiations():
             
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get detailed negotiations: {str(e)}")
+
+@app.post("/api/conversations/{message_id}/follow-up")
+async def send_follow_up(message_id: str):
+    """Send a follow-up message to a conversation"""
+    try:
+        import json
+        messages_file = os.path.join(project_root, "messages.json")
+
+        if not os.path.exists(messages_file):
+            raise HTTPException(status_code=404, detail="Messages file not found")
+
+        with open(messages_file, 'r') as f:
+            messages_data = json.load(f)
+
+        # Find the conversation by message_id
+        conversation = None
+        conversation_index = -1
+        for i, conv in enumerate(messages_data.get("conversations", [])):
+            conv_message_id = conv.get("message_id", "")
+            # Handle partial matches (message_id might be truncated in the request)
+            if conv_message_id and (conv_message_id.startswith(message_id) or message_id.startswith(conv_message_id[:12])):
+                conversation = conv
+                conversation_index = i
+                break
+
+        if not conversation:
+            raise HTTPException(status_code=404, detail=f"Conversation with message_id {message_id} not found")
+
+        conversation_url = conversation.get("conversation_url")
+        if not conversation_url:
+            raise HTTPException(status_code=400, detail="Conversation has no URL")
+
+        # Queue the follow-up message by updating the conversation status
+        # The conversation agent will pick this up and send the message
+        from datetime import datetime
+
+        # Add to message history
+        if "message_history" not in conversation:
+            conversation["message_history"] = []
+
+        conversation["message_history"].append({
+            "timestamp": datetime.now().isoformat(),
+            "from": "us",
+            "message": "Still interested?",
+            "pending": True  # Mark as pending to be sent
+        })
+
+        conversation["status"] = "follow_up_pending"
+        conversation["follow_up_message"] = "Still interested?"
+        conversation["last_updated"] = datetime.now().isoformat()
+
+        messages_data["conversations"][conversation_index] = conversation
+
+        with open(messages_file, 'w') as f:
+            json.dump(messages_data, f, indent=2)
+
+        return {
+            "success": True,
+            "message": f"Follow-up queued for conversation {message_id}",
+            "conversation_url": conversation_url
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to send follow-up: {str(e)}")
+
+@app.post("/api/conversations/{message_id}/close")
+async def close_conversation(message_id: str):
+    """Close a conversation by setting its status to 'closed'"""
+    try:
+        import json
+        messages_file = os.path.join(project_root, "messages.json")
+
+        if not os.path.exists(messages_file):
+            raise HTTPException(status_code=404, detail="Messages file not found")
+
+        with open(messages_file, 'r') as f:
+            messages_data = json.load(f)
+
+        # Find and close the conversation by message_id
+        conversations = messages_data.get("conversations", [])
+        closed = False
+
+        for conv in conversations:
+            conv_message_id = conv.get("message_id", "")
+            # Handle partial matches (message_id might be truncated in the request)
+            if conv_message_id and (conv_message_id.startswith(message_id) or message_id.startswith(conv_message_id[:12])):
+                conv["status"] = "closed"
+                closed = True
+                break
+
+        if not closed:
+            raise HTTPException(status_code=404, detail=f"Conversation with message_id {message_id} not found")
+
+        with open(messages_file, 'w') as f:
+            json.dump(messages_data, f, indent=2)
+
+        return {
+            "success": True,
+            "message": f"Conversation {message_id} closed",
+            "status": "closed"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to close conversation: {str(e)}")
 
 @app.get("/api/statistics")
 async def get_statistics():
@@ -892,15 +1026,22 @@ async def run_offers_automation(config: dict):
 
 async def run_conversations_automation(config: dict):
     """Run only the conversation agent"""
+    print("[BACKGROUND] run_conversations_automation started")
     try:
+        print("[BACKGROUND] Broadcasting 'running' status...")
         await broadcast_status("running", 0, "Starting conversation agent...")
-        
+
+        print("[BACKGROUND] Calling automation_runner.run_conversations_only...")
         # Run only the conversation agent
         results = await automation_runner.run_conversations_only(config, broadcast_status)
-        
+
+        print(f"[BACKGROUND] Conversation agent completed with {len(results)} results")
         await broadcast_status("completed", 100, f"Conversation agent completed. Processed {len(results)} results.", results)
-        
+
     except Exception as e:
+        print(f"[BACKGROUND] ERROR in run_conversations_automation: {str(e)}")
+        import traceback
+        traceback.print_exc()
         await broadcast_status("error", 0, f"Conversation agent failed: {str(e)}")
 
 async def run_scrape_listings_automation(config: dict):

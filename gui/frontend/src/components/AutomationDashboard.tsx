@@ -52,6 +52,7 @@ import {
   Schedule,
   Person,
   Message,
+  Reply,
 } from '@mui/icons-material';
 import { ApiService } from '../services/ApiService';
 import { WebSocketService } from '../services/WebSocketService';
@@ -422,6 +423,33 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
     setDetailedData(null);
   };
 
+  const handleFollowUp = async (messageId: string) => {
+    try {
+      await ApiService.sendFollowUp(messageId);
+      // Refresh the negotiations data
+      const data = await ApiService.getDetailedNegotiations();
+      setDetailedData(data);
+      onError('Follow-up message queued successfully!');
+    } catch (error) {
+      onError(`Failed to send follow-up: ${error}`);
+    }
+  };
+
+  const handleCloseConversation = async (messageId: string) => {
+    try {
+      await ApiService.closeConversation(messageId);
+      // Refresh the negotiations data
+      const data = await ApiService.getDetailedNegotiations();
+      setDetailedData(data);
+      // Also refresh statistics
+      const statistics = await ApiService.getStatistics();
+      setStats(statistics);
+      onError('Conversation closed successfully!');
+    } catch (error) {
+      onError(`Failed to close conversation: ${error}`);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'offer_sent': return 'primary';
@@ -490,7 +518,8 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
             </Typography>
           </Box>
           
-          {/* Search Section */}
+          {/* Search Section - HIDDEN for simplicity */}
+          {false && (
           <Box mb={4}>
             <Box display="flex" alignItems="center" gap={1} mb={2}>
               <Search sx={{ color: 'primary.main', fontSize: 20 }} />
@@ -505,8 +534,8 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 disabled={automationStatus.is_running}
-                sx={{ 
-                  minWidth: '300px', 
+                sx={{
+                  minWidth: '300px',
                   flex: 1,
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
@@ -523,7 +552,7 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
                 startIcon={<Search />}
                 onClick={handleScrapeListings}
                 disabled={automationStatus.is_running}
-                sx={{ 
+                sx={{
                   minWidth: '160px',
                   height: '56px',
                   borderRadius: 2,
@@ -541,8 +570,10 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
               </Button>
             </Box>
           </Box>
+          )}
 
-          {/* Headless Mode Configuration */}
+          {/* Headless Mode Configuration - HIDDEN for simplicity */}
+          {false && (
           <Box mb={4}>
             <Box display="flex" alignItems="center" gap={1} mb={2}>
               <Visibility sx={{ color: 'primary.main', fontSize: 20 }} />
@@ -594,8 +625,10 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
               </Typography>
             </FormGroup>
           </Box>
+          )}
 
-          {/* Pricing Settings */}
+          {/* Pricing Settings - HIDDEN for simplicity */}
+          {false && (
           <Box mb={4}>
             <Box display="flex" alignItems="center" gap={1} mb={2}>
               <AttachMoney sx={{ color: 'primary.main', fontSize: 20 }} />
@@ -612,7 +645,7 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
                 onChange={(e) => setMarginPercent(Math.max(0, Math.min(50, parseInt(e.target.value) || 0)))}
                 disabled={automationStatus.is_running || pricingLoading}
                 inputProps={{ min: 0, max: 50, step: 1 }}
-                sx={{ 
+                sx={{
                   width: '200px',
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
@@ -629,7 +662,7 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
                 startIcon={<Refresh />}
                 onClick={handleFetchPricing}
                 disabled={automationStatus.is_running || pricingLoading}
-                sx={{ 
+                sx={{
                   minWidth: '180px',
                   height: '56px',
                   borderRadius: 2,
@@ -650,7 +683,7 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
                 startIcon={<AttachMoney />}
                 onClick={handleUpdatePricing}
                 disabled={automationStatus.is_running || pricingLoading}
-                sx={{ 
+                sx={{
                   minWidth: '160px',
                   height: '56px',
                   borderRadius: 2,
@@ -678,6 +711,7 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
               </Box>
             )}
           </Box>
+          )}
 
           {/* Main Action Buttons */}
           <Box mb={4}>
@@ -1460,28 +1494,61 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 'bold' }}>Message ID</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>Last Message</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>From</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>Messages</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>Counter Offer</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>Updated</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Link</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {detailedData?.negotiations?.map((negotiation: any, index: number) => (
                     <TableRow key={index} hover>
                       <TableCell>
-                        <Typography variant="body2" fontWeight="500" sx={{ fontFamily: 'monospace', fontSize: '0.8rem' }}>
-                          {negotiation.message_id}
-                        </Typography>
+                        <Box display="flex" gap={1}>
+                          <Button
+                            size="small"
+                            variant="contained"
+                            startIcon={<Reply />}
+                            onClick={() => handleFollowUp(negotiation.message_id)}
+                            sx={{
+                              minWidth: '100px',
+                              fontSize: '0.7rem',
+                              background: 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
+                              '&:hover': {
+                                background: 'linear-gradient(135deg, #388e3c 0%, #2e7d32 100%)',
+                              }
+                            }}
+                          >
+                            Follow Up
+                          </Button>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<Close />}
+                            onClick={() => handleCloseConversation(negotiation.message_id)}
+                            sx={{
+                              minWidth: '80px',
+                              fontSize: '0.7rem',
+                              borderColor: '#ff9800',
+                              color: '#ff9800',
+                              '&:hover': {
+                                borderColor: '#f57c00',
+                                backgroundColor: 'rgba(255,152,0,0.1)',
+                              }
+                            }}
+                          >
+                            Close
+                          </Button>
+                        </Box>
                       </TableCell>
                       <TableCell>
-                        <Chip 
-                          label={negotiation.status} 
-                          color={negotiation.status === 'Deal Pending' ? 'success' : 
+                        <Chip
+                          label={negotiation.status}
+                          color={negotiation.status === 'Deal Pending' ? 'success' :
                                  negotiation.status === 'Negotiating' ? 'warning' : 'info'}
                           size="small"
                         />
@@ -1492,8 +1559,8 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Chip 
-                          label={negotiation.last_from} 
+                        <Chip
+                          label={negotiation.last_from}
                           color={negotiation.last_from === 'You' ? 'info' : 'default'}
                           size="small"
                         />
@@ -1515,8 +1582,8 @@ const AutomationDashboard: React.FC<AutomationDashboardProps> = ({ config, onErr
                       </TableCell>
                       <TableCell>
                         {negotiation.conversation_url && (
-                          <IconButton 
-                            size="small" 
+                          <IconButton
+                            size="small"
                             onClick={() => window.open(negotiation.conversation_url, '_blank')}
                             sx={{ color: 'primary.main' }}
                           >

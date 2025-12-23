@@ -15,7 +15,8 @@ search_keywords = (
     os.getenv("SEARCH_KEYWORDS", "").split(",") if os.getenv("SEARCH_KEYWORDS") else []
 )
 
-llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
+llm = ChatGoogle(model="gemini-3-flash-preview", api_key=api_key)
+# llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
 
 browser_profile = BrowserProfile(
     executable_path="/usr/bin/chromium",
@@ -77,6 +78,45 @@ def save_listings_to_db(listing_urls):
     return added
 
 
+def is_relevant_listing(title, search_term):
+    """Check if a listing title is relevant to the search term."""
+    if not title:
+        return False
+
+    title_lower = title.lower()
+    search_lower = search_term.lower()
+
+    # Extract key parts of the search term (e.g., "iPhone 13 Pro Max" -> ["iphone", "13", "pro", "max"])
+    search_parts = search_lower.split()
+
+    # For iPhone searches, check for the model number at minimum
+    if "iphone" in search_lower:
+        # Must contain "iphone" and the model number (e.g., "13", "14", "15")
+        if "iphone" not in title_lower:
+            return False
+
+        # Check for model number
+        model_numbers = [p for p in search_parts if p.isdigit() or p in ["se", "xr", "xs", "x"]]
+        if model_numbers:
+            if not any(num in title_lower for num in model_numbers):
+                return False
+
+        # If searching for "Pro Max", "Pro", or "Plus", check for those too
+        if "pro max" in search_lower and "pro max" not in title_lower:
+            return False
+        elif "pro" in search_lower and "max" not in search_lower and "pro" not in title_lower:
+            return False
+        elif "plus" in search_lower and "plus" not in title_lower:
+            return False
+    else:
+        # For non-iPhone searches, require at least 2 key words to match
+        matches = sum(1 for part in search_parts if part in title_lower and len(part) > 2)
+        if matches < 2:
+            return False
+
+    return True
+
+
 async def main():
     search_query = search_product + (
         " " + " ".join(search_keywords) if search_keywords else ""
@@ -90,34 +130,70 @@ async def main():
     try:
         agent = Agent(
             task=f"""Navigate to {marketplace_url}.
-            Goal: Extract URLs for "{search_product}" listings.
-            
+            Goal: Find listings for "{search_product}" ONLY.
+
             Instructions:
-            1. Scrape ALL listing URLs that match the search term "{search_product}" in the main results section.
-            2. Scroll down gently to load more local results. Do this at least 3-4 times to ensure all local listings are visible.
-            3. CRITICAL: STOP scraping immediately if you see headers like "Results from outside your search", "More picks for you", or "Suggested for you".
-            4. Do NOT scrape listings from those "outside search" or "suggested" sections. They are irrelevant.
-            5. It is okay if you only find a few listings (e.g. 1-5). Quality is more important than quantity.
-            6. Return the list of relevant URLs found.""",
+            1. Look at the listings on the page
+            2. Scroll down 2-3 times to load more results
+            3. For EACH listing, check if the title contains "{search_product}"
+            4. ONLY report listings that ACTUALLY match "{search_product}"
+
+            IMPORTANT - Be VERY selective:
+            - ONLY include listings where the title clearly mentions "{search_product}"
+            - DO NOT include random phones, accessories, or unrelated items
+            - DO NOT include listings from "Results from outside your search" section
+            - DO NOT include listings from "Suggested for you" section
+
+            Return format - For each matching listing, report:
+            LISTING: [exact title] | URL: [full URL]
+
+            Example:
+            LISTING: iPhone 13 Pro Max 256GB Unlocked | URL: https://facebook.com/marketplace/item/123456/
+
+            If NO listings match "{search_product}", just say "NO_MATCHING_LISTINGS" and stop.""",
             llm=llm,
             browser_session=browser_session,
-            max_steps=5,
+            max_steps=10,
         )
         result = await agent.run()
 
-        url_pattern = r"/marketplace/item/(\d+)/\?"
-        item_ids = set(re.findall(url_pattern, str(result)))
-        listings = [
-            f"https://www.facebook.com/marketplace/item/{item_id}/"
-            for item_id in item_ids
-        ]
+        result_str = str(result)
+        print(f"📄 Agent output preview: {result_str[:500]}...")
 
-        print(f"📋 Found {len(listings)} listings")
+        # Extract listings with titles from structured format
+        listing_pattern = r"LISTING:\s*([^|]+)\s*\|\s*URL:\s*(https?://[^\s]+)"
+        structured_matches = re.findall(listing_pattern, result_str, re.IGNORECASE)
+
+        # Also try to extract any marketplace URLs as fallback
+        url_pattern = r"/marketplace/item/(\d+)"
+        all_item_ids = set(re.findall(url_pattern, result_str))
+
+        listings = []
+
+        # First, use structured matches (title + URL) with relevance check
+        for title, url in structured_matches:
+            title = title.strip()
+            if is_relevant_listing(title, search_product):
+                item_id = extract_listing_id(url)
+                if item_id:
+                    clean_url = f"https://www.facebook.com/marketplace/item/{item_id}/"
+                    if clean_url not in listings:
+                        listings.append(clean_url)
+                        print(f"✅ Relevant: {title[:50]}...")
+            else:
+                print(f"❌ Filtered out (not relevant): {title[:50]}...")
+
+        # If no structured matches, fall back to URL extraction but be cautious
+        if not listings and all_item_ids:
+            print(f"⚠️ No structured matches, found {len(all_item_ids)} raw URLs - skipping unverified URLs")
+            # Don't blindly add unverified URLs - they're likely irrelevant
+
+        print(f"📋 Found {len(listings)} relevant listings for '{search_product}'")
 
         if listings:
             save_listings_to_db(listings)
         else:
-            print("⚠️ No listings found")
+            print(f"⚠️ No relevant listings found for '{search_product}'")
 
     finally:
         await browser_session.stop()

@@ -23,8 +23,8 @@ load_dotenv()
 api_key = get_gemini_api_key()
 
 # Create LLM using the browser-use compatible approach - using faster model for URL extraction
-# llm = ChatGoogle(model="gemini-2.5-pro-preview-05-06", api_key=api_key)
-llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
+llm = ChatGoogle(model="gemini-3-flash-preview", api_key=api_key)
+# llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
 
 
 browser_profile = BrowserProfile(
@@ -233,35 +233,44 @@ IMPORTANT NOTES:
         # Clean the URL and add to list - remove any trailing markers or newlines
         clean_url = url.strip()
 
+        # Remove escaped newlines and anything after them FIRST
+        clean_url = re.sub(r"\\n.*$", "", clean_url)
+        clean_url = re.sub(r"\n.*$", "", clean_url)
+
         # Remove any embedded markers that might have been captured
-        clean_url = re.sub(r"\\n.*?CONVERSATION_URL_END.*$", "", clean_url)
         clean_url = re.sub(r"\s*CONVERSATION_URL_END.*$", "", clean_url)
+        clean_url = re.sub(r"\s*CONVERSATION_URL_START.*$", "", clean_url)
+
+        # Remove trailing slashes, quotes, brackets, etc.
+        clean_url = re.sub(r"[/\"'<>\]\[\)\(]+$", "", clean_url)
         clean_url = clean_url.strip()
 
         print(
             f"DEBUG: Processing URL {index}: {clean_url[:50]}{'...' if len(clean_url) > 50 else ''}"
         )
 
-        # Final validation - ensure URL is properly formatted and doesn't contain any markers
-        # Match only properly formatted Facebook message URLs
+        # Final validation - ensure URL has a valid numeric message ID
+        # The message ID after /t/ should be numeric (or alphanumeric for some cases)
         valid_url_pattern = (
-            r'^https?://(?:www\.)?facebook\.com/messages/t/[^/\s\n"\'<>]+/?$'
+            r'^https?://(?:www\.)?facebook\.com/messages/t/(\d+)/?$'
         )
 
-        if re.match(valid_url_pattern, clean_url):
-            # URL is properly formatted, add it to the list
+        match = re.match(valid_url_pattern, clean_url)
+        if match:
+            # URL is properly formatted with numeric ID
             print(f"DEBUG: Valid URL format: {clean_url}")
             urls.append(clean_url)
         else:
-            # Try to extract a valid URL from the text
-            url_extract = re.search(
-                r'(https?://(?:www\.)?facebook\.com/messages/t/[^/\s\n"\'<>]+/?)',
+            # Try to extract just the numeric message ID and reconstruct URL
+            id_extract = re.search(
+                r'facebook\.com/messages/t/(\d+)',
                 clean_url,
             )
-            if url_extract:
-                extracted_url = url_extract.group(1)
-                print(f"DEBUG: Extracted embedded URL: {extracted_url}")
-                urls.append(extracted_url)
+            if id_extract:
+                message_id = id_extract.group(1)
+                reconstructed_url = f"https://www.facebook.com/messages/t/{message_id}"
+                print(f"DEBUG: Reconstructed URL from ID {message_id}: {reconstructed_url}")
+                urls.append(reconstructed_url)
             else:
                 print(f"DEBUG: Invalid URL format, skipping: {clean_url}")
 

@@ -20,6 +20,7 @@ from models import (
 )
 from utils.fix_messages_json import fix_messages_json
 from utils.config_loader import get_gemini_api_key
+from utils.pricing_manager import get_offer_price
 
 load_dotenv()
 
@@ -36,8 +37,8 @@ print(f"Negotiation enabled: {enable_negotiation}")
 print(f"Price flexibility: ${price_flexibility}")
 
 # Use browser-use compatible LLM
-# llm = ChatGoogle(model="gemini-2.5-pro-preview-05-06", api_key=api_key)
-llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
+llm = ChatGoogle(model="gemini-3-flash-preview", api_key=api_key)
+# llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
 
 
 browser_profile = BrowserProfile(
@@ -212,8 +213,9 @@ NEGOTIATION_SCRIPT = load_negotiation_script()
 
 def create_new_conversation(
     listing_item, conversation_url, seller_info, item_info
-) -> ConversationModel:
-    """Create a new conversation entry following the Pydantic model schema."""
+) -> Optional[ConversationModel]:
+    """Create a new conversation entry following the Pydantic model schema.
+    Returns None if no valid offer price can be determined."""
     now = datetime.now().isoformat()
 
     # Clean URL by removing any trailing newlines
@@ -222,12 +224,32 @@ def create_new_conversation(
     # Extract message ID from URL
     message_id = extract_message_id_from_url(clean_url)
 
+    # Get offer price - NO DEFAULT, must have a valid price
+    offer_price = listing_item.get("offer_price")
+    product_name = item_info.get("title", listing_item.get("title", ""))
+
+    # If no offer_price in listing_item, try to look it up from pricing manager
+    if not offer_price and product_name:
+        try:
+            price_info = get_offer_price(product_name, "")
+            if price_info and price_info.get("offer_price"):
+                offer_price = int(price_info["offer_price"])
+                print(f"📝 Looked up offer price from pricing manager: ${offer_price}")
+        except Exception as e:
+            print(f"⚠️ Could not look up price from pricing manager: {e}")
+
+    # If still no price, we cannot create this conversation
+    if not offer_price:
+        print(f"⚠️⚠️ SKIPPING conversation creation - no offer price for: {product_name}")
+        print(f"⚠️⚠️ URL: {clean_url}")
+        return None
+
     # Create message history
     message_history = [
         {
             "timestamp": listing_item.get("messaged_at", now),
             "from": "us",
-            "message": f"Hi I can do ${listing_item.get('offer_price', 280)} cash for it",
+            "message": f"Hi I can do ${offer_price} cash for it",
         }
     ]
 
@@ -235,12 +257,12 @@ def create_new_conversation(
     return ConversationModel(
         conversation_url=clean_url,
         seller_name=seller_info.get("name", listing_item.get("seller_name", "Unknown")),
-        product_name=item_info.get("title", listing_item.get("title", search_product)),
+        product_name=product_name or search_product,
         status="awaiting_response",
-        last_message=f"Hi I can do ${listing_item.get('offer_price', 280)} cash for it",
+        last_message=f"Hi I can do ${offer_price} cash for it",
         last_updated=now,
         message_history=message_history,
-        offer_amount=listing_item.get("offer_price", 280),
+        offer_amount=offer_price,
         message_id=message_id,
     )
 
@@ -302,9 +324,16 @@ async def read_conversation(
         print(f"⚠️ Conversation not found for URL: {conversation_url}")
         return None
 
-    # Extract result from agent's output
-    result_str = str(result) if result else ""
-    result_str_lower = result_str.lower()
+    # Extract result from agent's output - use final_result() for clean text
+    if result is None:
+        result_str = ""
+    elif hasattr(result, 'final_result') and callable(result.final_result):
+        result_text = result.final_result()
+        result_str = result_text if result_text else ""
+    else:
+        result_str = str(result)
+
+    result_str_lower = result_str.lower() if isinstance(result_str, str) else str(result_str).lower()
     print(f"🔍 Processing agent result for {conversation_url}")
     print(f"📝 Result preview: {result_str_lower[:200]}...")
     print(f"📊 Current conversation status: {conversation.status}")
@@ -334,6 +363,20 @@ async def read_conversation(
         ):
             conversation.product_name = extracted_product_name
             print(f"✅ Extracted product name: {extracted_product_name}")
+
+    # Extract OUR initial offer from the agent's reading of the conversation
+    # This is CRITICAL for proper negotiation logic
+    our_initial_offer_match = re.search(
+        r"OUR_INITIAL_OFFER:\s*\$?(\d+)", result_str, re.IGNORECASE
+    )
+    if our_initial_offer_match:
+        extracted_initial_offer = int(our_initial_offer_match.group(1))
+        # Only update if we don't already have an offer_amount or if the extracted one is more reasonable
+        if not conversation.offer_amount or conversation.offer_amount != extracted_initial_offer:
+            print(f"✅ Extracted OUR initial offer from conversation: ${extracted_initial_offer}")
+            conversation.offer_amount = extracted_initial_offer
+            # Save immediately to ensure we don't lose this critical data
+            save_conversation(conversation)
 
     last_message_match = re.search(
         r"LAST_MESSAGE:\s*([^\n]+)", result_str, re.IGNORECASE
@@ -400,7 +443,52 @@ async def read_conversation(
             print(f"💰 Detected counter offer: ${counter_amount}")
 
             # Decision logic based on counter offer
-            initial_offer = conversation.offer_amount or 280
+            # IMPORTANT: We must find OUR initial offer, NOT the seller's counter!
+            # Priority: 1) stored offer_amount, 2) pricing manager (most reliable), 3) message history, 4) default
+            initial_offer = conversation.offer_amount
+
+            # First, try to look up price from pricing manager using product name
+            # This is the most reliable source since it's based on our configured pricing
+            if not initial_offer and conversation.product_name:
+                try:
+                    price_info = get_offer_price(conversation.product_name, "")
+                    if price_info and price_info.get("offer_price"):
+                        initial_offer = int(price_info["offer_price"])
+                        print(f"📝 Looked up offer from pricing manager: ${initial_offer}")
+                        conversation.offer_amount = initial_offer
+                except Exception as e:
+                    print(f"⚠️ Could not look up price from pricing manager: {e}")
+
+            # If no pricing manager match, try to extract from our FIRST message in history
+            # Only look for messages that contain our offer pattern "I can do $X"
+            if not initial_offer and conversation.message_history:
+                for msg in conversation.message_history:
+                    if msg.get("from") == "us":
+                        msg_text = msg.get("message", "")
+                        # Only match our specific offer format to avoid grabbing wrong prices
+                        offer_match = re.search(r"(?:I can do|can do|offer)\s*\$(\d+)", msg_text, re.IGNORECASE)
+                        if offer_match:
+                            initial_offer = int(offer_match.group(1))
+                            print(f"📝 Extracted initial offer from message history: ${initial_offer}")
+                            conversation.offer_amount = initial_offer
+                            break
+
+            # If no initial offer found, we cannot safely negotiate - skip this conversation
+            if not initial_offer:
+                print(f"⚠️⚠️ SKIPPING: No initial offer found for product: {conversation.product_name}")
+                print(f"⚠️⚠️ Cannot negotiate without knowing our starting price. Marking as needs_help.")
+                conversation.status = "needs_help"
+                save_conversation(conversation)
+                return  # Skip this conversation entirely
+
+            # SAFETY CHECK: If our "initial_offer" is suspiciously close to the counter_amount,
+            # it might be the seller's price that was incorrectly captured. Skip to be safe.
+            if initial_offer >= counter_amount:
+                print(f"⚠️⚠️ SKIPPING: initial_offer (${initial_offer}) >= counter (${counter_amount}), likely wrong!")
+                print(f"⚠️⚠️ Cannot safely negotiate - our offer seems incorrect. Marking as needs_help.")
+                conversation.status = "needs_help"
+                save_conversation(conversation)
+                return  # Skip this conversation entirely
 
             # Get the max counter offer rule from the script
             max_counter_rule = NEGOTIATION_SCRIPT.get("rules", {}).get(
@@ -423,15 +511,18 @@ async def read_conversation(
             if counter_amount <= initial_offer + max_counter_amount:
                 # Accept if within the allowed counter offer limit
                 print(
-                    f"✅ Counter offer within acceptable range, accepting: ${counter_amount}"
+                    f"✅ Counter offer ${counter_amount} is within acceptable range (max: ${initial_offer + max_counter_amount}), accepting!"
                 )
                 our_message = f"I can do ${counter_amount}. When and where can we meet?"
                 status_update = "deal_pending"
             else:
-                # Counter with a middle price
-                middle_price = (initial_offer + counter_amount) // 2
+                # Counter with initial_offer + $20 per negotiation script
+                our_counter = initial_offer + max_counter_amount
                 print(
-                    f"🔄 Counter offer too high, countering with middle price: ${middle_price}"
+                    f"🔄 Counter offer ${counter_amount} too high (max acceptable: ${initial_offer + max_counter_amount})"
+                )
+                print(
+                    f"💬 Countering with: ${our_counter} (initial ${initial_offer} + ${max_counter_amount})"
                 )
 
                 # Use the counter response from the script, replace placeholders
@@ -441,17 +532,20 @@ async def read_conversation(
                 )
 
                 # Replace placeholders in the template
+                # ${their_counter_offer} = seller's counter (e.g., $450)
+                # ${our_initial_offer + $10-20} = our counter (initial + $20, e.g., $320)
+                # ${our_counter_offer} = same as above (for backwards compatibility)
                 our_message = counter_response.replace(
                     "${their_counter_offer}", str(counter_amount)
                 )
                 our_message = our_message.replace(
                     "${our_initial_offer + $10-20}",
-                    str(initial_offer + max_counter_amount),
+                    str(our_counter),
                 )
                 our_message = our_message.replace(
-                    "${our_counter_offer}", str(middle_price)
+                    "${our_counter_offer}", str(our_counter)
                 )
-                our_message = our_message.replace("${middle_price}", str(middle_price))
+                our_message = our_message.replace("${middle_price}", str(our_counter))
 
                 status_update = "negotiating"
 
@@ -463,6 +557,15 @@ async def read_conversation(
                 "decline", "How much were you looking to get for it?"
             )
             status_update = "negotiating"
+
+    elif "seller_declined" in result_str_lower:
+        # Seller declined without giving a counter price - ask what they want
+        print("📝 Seller declined without counter offer, asking what they want")
+        seller_message = "No"
+        our_message = NEGOTIATION_SCRIPT["responses"].get(
+            "decline", "How much were you looking to get for it?"
+        )
+        status_update = "negotiating"
 
     elif "seller_questions:" in result_str_lower:
         # Extract the specific question type from the structured response
@@ -482,8 +585,10 @@ async def read_conversation(
                 our_message = NEGOTIATION_SCRIPT["scenarios"].get("ask_timing")
             elif question_type == "other_buyers":
                 our_message = NEGOTIATION_SCRIPT["scenarios"].get("other_buyers")
+                status_update = "closed"  # Other buyer likely got it, close this conversation
             elif question_type == "sold":
                 our_message = NEGOTIATION_SCRIPT["scenarios"].get("item_sold")
+                status_update = "closed"  # Item is sold, close this conversation
             elif question_type == "about_us":
                 our_message = NEGOTIATION_SCRIPT["scenarios"].get("ask_about_us")
             elif question_type == "meeting_place":
@@ -497,7 +602,9 @@ async def read_conversation(
             seller_message = "I have some questions"
             our_message = "Sure, what would you like to know?"
 
-        status_update = "answering_questions"
+        # Only set to answering_questions if not already set to a terminal status
+        if not status_update:
+            status_update = "answering_questions"
 
     elif "needs_human_help" in result_str_lower:
         # Complex situation requiring human intervention
@@ -614,8 +721,36 @@ async def main():
                 f"📋 Conversation {idx + 1}: URL={conv.conversation_url[:50]}... Status={conv.status}"
             )
 
-            if conv.status in ["closed", "deal_completed"]:
-                print(f"⏭️ Skipping completed conversation: {conv.status}")
+            # Skip conversations that are terminal/dead states
+            skip_statuses = [
+                "closed",           # Explicitly closed
+                "deal_completed",   # Deal done
+                "item_sold",        # Item sold to someone else
+                "no_response_final", # No response after multiple attempts
+                "rejected",         # Seller rejected our offer
+                "needs_help",       # Needs human intervention, don't auto-process
+            ]
+            if conv.status in skip_statuses:
+                print(f"⏭️ Skipping terminal conversation: {conv.status}")
+                continue
+
+            # Also skip if the last message from us was a "closing" response
+            closing_phrases = [
+                "Thanks for letting me know",
+                "If it falls through",
+                "let me know if anything changes",
+                "my offer will still stand",
+            ]
+            should_skip = False
+            if conv.last_message:
+                for phrase in closing_phrases:
+                    if phrase.lower() in conv.last_message.lower():
+                        print(f"⏭️ Skipping conversation with closing message: {conv.last_message[:50]}...")
+                        # Mark as closed for future runs
+                        conv.status = "closed"
+                        should_skip = True
+                        break
+            if should_skip:
                 continue
 
             conversation_url = conv.conversation_url
@@ -637,22 +772,28 @@ async def main():
 
             # Process with direct URL and provide more detailed instructions based on negotiation script
             agent.add_new_task(f"""Check conversation at {conversation_url}
-            
+
 1. Go to the URL
-2. Read all messages and extract conversation data
+2. Read all messages in the conversation carefully
 3. Report the following information in this EXACT format:
 
 SELLER_NAME: [name from conversation header/title]
-PRODUCT_NAME: [product name from conversation header/title] 
-LAST_MESSAGE: [most recent message in the conversation]
+PRODUCT_NAME: [product name from conversation header/title]
+OUR_INITIAL_OFFER: $[the dollar amount from OUR first message that says "I can do $X cash"]
+LAST_MESSAGE: [most recent message in the conversation - text only]
 LAST_MESSAGE_FROM: [either "us" or "seller"]
 
-4. Then analyze seller's response and report ONE of the following:
-   - If they accepted our offer: Reply "SELLER_ACCEPTED"
-   - If they made a counter-offer (mentioned a different price): Reply "COUNTER_OFFER: $[their price]" 
+4. Then analyze THE SELLER'S DIRECT MESSAGES (NOT Facebook system notifications) and report ONE of the following:
+
+   IMPORTANT: Ignore Facebook system messages like "X reduced the price to $Y" or "X changed the listing" - these are NOT counter offers!
+   A counter-offer is ONLY when the seller DIRECTLY writes a message with a price like "I want $400" or "How about $350" or just a number like "300"
+
+   - If seller ACCEPTED our offer (said yes, ok, deal, agreed, etc): Reply "SELLER_ACCEPTED"
+   - If seller made a DIRECT counter-offer (their own message with a different price): Reply "COUNTER_OFFER: $[their price]"
+   - If seller simply said "no" or declined WITHOUT mentioning a price: Reply "SELLER_DECLINED"
    - If they asked about location/meeting place: Reply "SELLER_QUESTIONS: location"
    - If they asked about payment method: Reply "SELLER_QUESTIONS: payment"
-   - If they asked about timing/when to meet: Reply "SELLER_QUESTIONS: timing" 
+   - If they asked about timing/when to meet: Reply "SELLER_QUESTIONS: timing"
    - If they asked about phone condition requirements: Reply "SELLER_QUESTIONS: condition"
    - If they mentioned other buyers: Reply "SELLER_QUESTIONS: other_buyers"
    - If they said item is sold: Reply "SELLER_QUESTIONS: sold"
@@ -663,7 +804,18 @@ LAST_MESSAGE_FROM: [either "us" or "seller"]
 5. Wait for my instructions on how to respond""")
 
             result = await agent.run()
-            result_str = str(result).lower()
+
+            # Properly extract the text content from the agent result
+            # Using final_result() instead of str() to avoid capturing metadata
+            if hasattr(result, 'final_result') and callable(result.final_result):
+                result_text = result.final_result()
+                if result_text is None:
+                    result_text = ""
+            else:
+                result_text = str(result)
+
+            result_str = result_text.lower() if isinstance(result_text, str) else str(result_text).lower()
+            print(f"📄 Extracted result text: {result_str[:300]}...")
 
             # Update conversation with the result
             updated_conversation = await read_conversation(

@@ -404,156 +404,158 @@ class AutomationRunner:
                     f"Starting automation for {total_products} search products...",
                 )
 
-            # Process products starting from the resume point
-            for product_index in range(start_index, total_products):
-                product = search_products[product_index]
-                # Handle both old format (string) and new format (dict)
+            # Build product list with pricing info
+            products_with_pricing = []
+            for product in search_products:
                 if isinstance(product, dict):
-                    search_product = product["name"]
-                    product_pricing = product
+                    products_with_pricing.append({
+                        "name": product["name"],
+                        "pricing": product
+                    })
                 else:
-                    search_product = str(product)
-                    product_pricing = {
-                        "name": search_product,
-                        "base_offer_unlocked": 300,
-                        "base_offer_locked": 250,
-                        "base_offer_unlocked_damaged": 150,
-                        "base_offer_locked_damaged": 100,
-                    }
+                    products_with_pricing.append({
+                        "name": str(product),
+                        "pricing": {
+                            "name": str(product),
+                            "base_offer_unlocked": 300,
+                            "base_offer_locked": 250,
+                            "base_offer_unlocked_damaged": 150,
+                            "base_offer_locked_damaged": 100,
+                        }
+                    })
+
+            # ========== PHASE 1: SCRAPE LISTINGS FOR ALL PRODUCTS ==========
+            await progress_callback(
+                "running",
+                5,
+                f"Phase 1: Scraping listings for {total_products} search products...",
+            )
+
+            for product_index, product_info in enumerate(products_with_pricing):
                 if self.should_stop:
-                    print(
-                        f"[STATE] Automation stopped by user at product index {product_index}"
-                    )
-                    # Save progress for the last completed product (if any)
-                    if product_index > 0:
-                        self._save_product_completion(
-                            automation_state, product_index - 1
-                        )
-                        print(
-                            f"[STATE] Saved progress up to product index {product_index - 1}"
-                        )
+                    print(f"[STATE] Automation stopped during Phase 1 at product {product_index}")
                     return results
 
-                base_progress = int(
-                    (product_index / total_products) * 90
-                )  # Reserve 10% for final completion
+                search_product = product_info["name"]
+                phase1_progress = 5 + int((product_index / total_products) * 25)  # 5-30%
 
                 await progress_callback(
                     "running",
-                    base_progress + 2,
-                    f"Processing '{search_product}' - Step 1: Finding listings...",
+                    phase1_progress,
+                    f"Phase 1: Scraping listings for '{search_product}' ({product_index + 1}/{total_products})...",
                 )
 
-                # Step 1: Search for listings (get_listing_urls.py)
-                await progress_callback(
-                    "console",
-                    0,
-                    f"DEBUG: About to run listing search for '{search_product}'",
-                )
+                # Step 1a: Search for listings
                 await self._run_listing_search(
                     search_product,
                     search_keywords,
                     config,
                     progress_callback,
-                    base_progress + 5,
-                )
-                await progress_callback(
-                    "console",
-                    0,
-                    f"DEBUG: Listing search completed for '{search_product}'",
+                    phase1_progress,
                 )
 
                 if self.should_stop:
                     return results
 
-                await progress_callback(
-                    "running",
-                    base_progress + 15,
-                    f"Processing '{search_product}' - Step 2: Deduplicating listings...",
-                )
-
-                # Step 2: Deduplicate listings (fix_duplicates.py)
-                await progress_callback(
-                    "console",
-                    0,
-                    f"DEBUG: About to run deduplication for '{search_product}'",
-                )
+                # Step 1b: Deduplicate listings
                 await self._fix_duplicates(
-                    search_product, config, progress_callback, base_progress + 15
-                )
-                await progress_callback(
-                    "console",
-                    0,
-                    f"DEBUG: Deduplication completed for '{search_product}'",
+                    search_product, config, progress_callback, phase1_progress + 5
                 )
 
+            await progress_callback(
+                "running",
+                30,
+                f"Phase 1 Complete: Scraped listings for all {total_products} products",
+            )
+
+            if self.should_stop:
+                return results
+
+            # ========== PHASE 2: SEND OFFERS FOR ALL PRODUCTS ==========
+            await progress_callback(
+                "running",
+                32,
+                f"Phase 2: Sending offers for {total_products} products...",
+            )
+
+            for product_index, product_info in enumerate(products_with_pricing):
                 if self.should_stop:
+                    print(f"[STATE] Automation stopped during Phase 2 at product {product_index}")
+                    if product_index > 0:
+                        self._save_product_completion(automation_state, product_index - 1)
                     return results
+
+                search_product = product_info["name"]
+                product_pricing = product_info["pricing"]
+                phase2_progress = 32 + int((product_index / total_products) * 30)  # 32-62%
 
                 await progress_callback(
                     "running",
-                    base_progress + 30,
-                    f"Processing '{search_product}' - Step 3: Sending offers...",
+                    phase2_progress,
+                    f"Phase 2: Sending offers for '{search_product}' ({product_index + 1}/{total_products})...",
                 )
 
-                # Step 3: Send offers (offer_agent.py)
+                # Send offers for this product
                 offer_results = await self._send_offers(
                     search_product,
                     product_pricing,
                     config,
                     progress_callback,
-                    base_progress + 30,
+                    phase2_progress,
                 )
                 results.extend(offer_results)
 
+            await progress_callback(
+                "running",
+                62,
+                f"Phase 2 Complete: Sent offers for all {total_products} products",
+            )
+
+            if self.should_stop:
+                return results
+
+            # ========== PHASE 3: HANDLE CONVERSATIONS FOR ALL PRODUCTS ==========
+            await progress_callback(
+                "running",
+                64,
+                f"Phase 3: Managing conversations for {total_products} products...",
+            )
+
+            for product_index, product_info in enumerate(products_with_pricing):
                 if self.should_stop:
-                    print(
-                        f"[STATE] Automation stopped by user during offers step for product index {product_index}"
-                    )
+                    print(f"[STATE] Automation stopped during Phase 3 at product {product_index}")
                     if product_index > 0:
-                        self._save_product_completion(
-                            automation_state, product_index - 1
-                        )
+                        self._save_product_completion(automation_state, product_index - 1)
                     return results
+
+                search_product = product_info["name"]
+                phase3_progress = 64 + int((product_index / total_products) * 30)  # 64-94%
 
                 await progress_callback(
                     "running",
-                    base_progress + 60,
-                    f"Processing '{search_product}' - Step 4: Getting conversation URLs...",
+                    phase3_progress,
+                    f"Phase 3: Getting conversation URLs for '{search_product}' ({product_index + 1}/{total_products})...",
                 )
 
-                # Step 4: Extract marketplace URLs (get_marketplace_urls.py)
+                # Extract marketplace URLs
                 await self._extract_marketplace_urls(
-                    search_product, config, progress_callback, base_progress + 60
+                    search_product, config, progress_callback, phase3_progress
                 )
 
                 if self.should_stop:
-                    print(
-                        f"[STATE] Automation stopped by user during marketplace URLs step for product index {product_index}"
-                    )
-                    if product_index > 0:
-                        self._save_product_completion(
-                            automation_state, product_index - 1
-                        )
                     return results
 
-                # Step 5: Handle conversations (if enabled)
+                # Handle conversations (if enabled)
                 if config.get("enable_negotiation", True):
                     await progress_callback(
                         "running",
-                        base_progress + 80,
-                        f"Processing '{search_product}' - Step 5: Managing conversations...",
+                        phase3_progress + 10,
+                        f"Phase 3: Managing conversations for '{search_product}'...",
                     )
                     conversation_results = await self._handle_conversations(
-                        search_product, config, progress_callback, base_progress + 80
+                        search_product, config, progress_callback, phase3_progress + 10
                     )
                     results.extend(conversation_results)
-
-                await progress_callback(
-                    "running",
-                    base_progress + 90,
-                    f"Completed processing '{search_product}'",
-                )
 
                 # Save progress after completing this product
                 self._save_product_completion(automation_state, product_index)
@@ -724,7 +726,9 @@ class AutomationRunner:
         """
         Run only the conversation agent for existing messages
         """
+        print("[RUNNER] run_conversations_only called")
         if self.is_running:
+            print("[RUNNER] ERROR: Automation is already running")
             raise Exception("Automation is already running")
 
         self.is_running = True
@@ -733,17 +737,22 @@ class AutomationRunner:
 
         try:
             # Kill any existing automation processes first
+            print("[RUNNER] Killing existing automation processes...")
             self._kill_existing_automation_processes()
 
             # Validate configuration
+            print(f"[RUNNER] Validating config - gemini_api_key: {'SET' if config.get('gemini_api_key') else 'MISSING'}")
             if not config.get("gemini_api_key"):
+                print("[RUNNER] ERROR: Gemini API key is required")
                 raise Exception("Gemini API key is required")
 
             search_products = config.get(
                 "search_products", [{"name": "iPhone 13 Pro Max"}]
             )
+            print(f"[RUNNER] Search products: {search_products}")
 
             # Initialize automation state tracking for conversations only
+            print("[RUNNER] Initializing automation state...")
             automation_state = self._initialize_automation_state(
                 config, "conversations_only"
             )
@@ -751,6 +760,7 @@ class AutomationRunner:
             # Determine starting point from state
             start_index = automation_state.get_next_product_index()
             total_products = len(search_products)
+            print(f"[RUNNER] Start index: {start_index}, Total products: {total_products}")
 
             if start_index > 0:
                 await progress_callback(
@@ -772,7 +782,10 @@ class AutomationRunner:
                 else:
                     search_product = str(product)
 
+                print(f"[RUNNER] Processing product {product_index + 1}/{total_products}: {search_product}")
+
                 if self.should_stop:
+                    print("[RUNNER] Stop requested, returning results")
                     return results
 
                 base_progress = int((product_index / total_products) * 90)
@@ -783,17 +796,41 @@ class AutomationRunner:
                     f"Processing conversations for '{search_product}'...",
                 )
 
-                # Step 1: Always get marketplace URLs to check for new conversations
-                await progress_callback(
-                    "running",
-                    base_progress + 5,
-                    f"Extracting marketplace conversation URLs...",
-                )
-                marketplace_url_results = await self._get_marketplace_urls(
-                    search_product, config, progress_callback, base_progress + 5
-                )
+                # Step 1: Check if we should skip URL extraction (conversations already exist)
+                skip_url_extraction = config.get("skip_url_extraction", True)
+                messages_file = os.path.join(self.project_root, "messages.json")
+
+                existing_conversations = 0
+                if os.path.exists(messages_file):
+                    try:
+                        with open(messages_file, 'r') as f:
+                            messages_data = json.load(f)
+                            existing_conversations = len(messages_data.get("conversations", []))
+                    except:
+                        pass
+
+                if skip_url_extraction and existing_conversations > 0:
+                    print(f"[RUNNER] Step 1: SKIPPING URL extraction - {existing_conversations} conversations already exist")
+                    await progress_callback(
+                        "running",
+                        base_progress + 5,
+                        f"Skipping URL extraction - {existing_conversations} conversations already in queue...",
+                    )
+                    marketplace_url_results = []
+                else:
+                    print(f"[RUNNER] Step 1: Getting marketplace URLs for '{search_product}'...")
+                    await progress_callback(
+                        "running",
+                        base_progress + 5,
+                        f"Extracting marketplace conversation URLs...",
+                    )
+                    marketplace_url_results = await self._get_marketplace_urls(
+                        search_product, config, progress_callback, base_progress + 5
+                    )
+                    print(f"[RUNNER] Step 1 complete: Got {len(marketplace_url_results) if marketplace_url_results else 0} URLs")
 
                 # Step 2: Run deduplication/formatting script
+                print(f"[RUNNER] Step 2: Running fix_duplicates...")
                 await progress_callback(
                     "running",
                     base_progress + 10,
@@ -802,19 +839,23 @@ class AutomationRunner:
                 await self._fix_duplicates(
                     search_product, config, progress_callback, base_progress + 10
                 )
+                print("[RUNNER] Step 2 complete")
 
                 # Step 3: Then run the conversation agent
+                print(f"[RUNNER] Step 3: Running conversation agent (enabled: {config.get('enable_negotiation', True)})...")
                 if config.get("enable_negotiation", True):
                     conversation_results = await self._handle_conversations(
                         search_product, config, progress_callback, base_progress + 20
                     )
                     results.extend(conversation_results)
+                    print(f"[RUNNER] Step 3 complete: Got {len(conversation_results)} results")
                 else:
                     await progress_callback(
                         "running",
                         base_progress + 25,
                         f"Negotiation disabled, skipping conversations for '{search_product}'",
                     )
+                    print("[RUNNER] Step 3 skipped: negotiation disabled")
 
                 if self.should_stop:
                     return results

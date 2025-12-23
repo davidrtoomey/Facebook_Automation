@@ -177,14 +177,27 @@ def extract_message_id_from_url(url):
     """Extract message thread ID from Facebook URL."""
     if not url:
         return None
-    
-    # Clean URL first - remove any trailing markers or newlines
+
+    # Clean URL first - remove any trailing markers, newlines, or garbage text
     clean_url = str(url).strip()
-    clean_url = re.sub(r'\\n.*?CONVERSATION_URL_END.*$', '', clean_url)
+
+    # Remove escaped newlines and anything after them
+    clean_url = re.sub(r'\\n.*$', '', clean_url)
+    clean_url = re.sub(r'\n.*$', '', clean_url)
+
+    # Remove CONVERSATION_URL markers
     clean_url = re.sub(r'\s*CONVERSATION_URL_END.*$', '', clean_url)
+    clean_url = re.sub(r'\s*CONVERSATION_URL_START.*$', '', clean_url)
     clean_url = clean_url.strip()
-    
-    match = re.search(r"facebook\.com/messages/t/([^/?&\s\n]+)", clean_url)
+
+    # Extract the message ID - should be numeric only
+    # Pattern: get everything after /t/ that looks like a message ID (numbers only)
+    match = re.search(r"facebook\.com/messages/t/(\d+)", clean_url)
+    if match:
+        return match.group(1)
+
+    # Fallback: try to extract any alphanumeric ID (some IDs might have letters)
+    match = re.search(r"facebook\.com/messages/t/([a-zA-Z0-9]+)", clean_url)
     return match.group(1) if match else None
 
 

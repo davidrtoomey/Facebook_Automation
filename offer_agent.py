@@ -29,7 +29,8 @@ print(f"✅ Loaded {len(all_products_config)} configured products")
 if not api_key:
     raise ValueError("Gemini API key required")
 
-llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
+llm = ChatGoogle(model="gemini-3-flash-preview", api_key=api_key)
+# llm = ChatGoogle(model="gemini-2.5-pro", api_key=api_key)
 browser_profile = BrowserProfile(
     executable_path="/usr/bin/chromium",
     user_data_dir="/home/david/.config/browseruse/profiles/agent",
@@ -331,13 +332,14 @@ async def process_single_url(browser_session, listing_item, index):
 
         agent.add_new_task(
             f"""
-            1. Click the "Message" or "Send" button on the listing page.
-            2. Wait for the message dialog/popup to appear.
-            3. Clear any existing default text in the message input field.
-            4. Type exactly: "{message}"
-            5. Click the "Send message" or "Send" button to actually send it.
-            6. Verify the message was sent (look for "Message sent" confirmation or the chat window opening).
-            7. If successful, report "SENT: {message}".
+            1. Click the "Message" button on the listing page to open the message dialog.
+            2. Wait for the message dialog/popup to appear with a text input field.
+            3. Find the message textarea/input field and use the input action with index and clear=True to replace any existing text.
+            4. Input exactly: "{message}"
+            5. CRITICAL: To send the message, press the Enter key. Do NOT click any buttons - just press Enter while focused on the text input.
+            6. WARNING: Do NOT click on coordinates below y=700 - that area contains the location/address button which will open a "Change location" modal. The Send action should be done with Enter key only.
+            7. Verify the message was sent (look for the message appearing in a chat thread or the dialog content changing).
+            8. If successful, report "SENT: {message}".
             """
         )
         message_result = await agent.run()

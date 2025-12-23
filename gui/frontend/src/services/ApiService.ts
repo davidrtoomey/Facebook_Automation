@@ -393,6 +393,25 @@ export class ApiService {
     }
   }
 
+  // Conversation Actions
+  static async sendFollowUp(messageId: string): Promise<any> {
+    try {
+      const response = await apiClient.post(`/api/conversations/${messageId}/follow-up`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.detail || 'Failed to send follow-up');
+    }
+  }
+
+  static async closeConversation(messageId: string): Promise<any> {
+    try {
+      const response = await apiClient.post(`/api/conversations/${messageId}/close`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.detail || 'Failed to close conversation');
+    }
+  }
+
   // Helper method to check if backend is available
   static async isBackendAvailable(): Promise<boolean> {
     try {

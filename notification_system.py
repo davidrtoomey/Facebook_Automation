@@ -86,41 +86,70 @@ def send_email(subject, message, email_address=None):
 
 def notify_deal_closed(listing_item, agreed_price, seller_name=None, meetup_time=None, email_address=None):
     """Send notification when a deal is successfully closed"""
-    
-    price = agreed_price or listing_item.get('offer_price', 'Unknown')
+
+    # Handle both Pydantic models and dictionaries
+    if hasattr(listing_item, 'offer_amount'):
+        # It's a ConversationModel (Pydantic)
+        fallback_price = listing_item.offer_amount or 'Unknown'
+        url = listing_item.conversation_url or 'No URL'
+        product = listing_item.product_name or 'iPhone'
+    elif isinstance(listing_item, dict):
+        # It's a dictionary
+        fallback_price = listing_item.get('offer_price', listing_item.get('offer_amount', 'Unknown'))
+        url = listing_item.get('url', listing_item.get('conversation_url', 'No URL'))
+        product = listing_item.get('product_name', 'iPhone')
+    else:
+        fallback_price = 'Unknown'
+        url = 'No URL'
+        product = 'iPhone'
+
+    price = agreed_price or fallback_price
     seller = seller_name or "Unknown Seller"
     meetup = meetup_time or "TBD"
-    url = listing_item.get('url', 'No URL')
-    
-    subject = f"✅ DEAL CLOSED - iPhone 13 Pro Max ${price}"
-    
+
+    subject = f"✅ DEAL CLOSED - {product} ${price}"
+
     message = f"""Deal Successfully Closed!
 
-Item: iPhone 13 Pro Max - ${price}
+Item: {product} - ${price}
 Seller: {seller}
 Meetup: {meetup} at Wawa Collegeville
 Link: {url}
 Time: {datetime.now().strftime('%I:%M %p on %m/%d/%Y')}
 
 Please verify all details before the meetup and bring exact cash amount."""
-    
+
     return send_email(subject, message, email_address)
 
 def notify_agent_needs_help(listing_item, issue_description, last_seller_message, seller_name=None, email_address=None):
     """Send notification when agent needs human help"""
-    
-    price = listing_item.get('offer_price', 'Unknown')
+
+    # Handle both Pydantic models and dictionaries
+    if hasattr(listing_item, 'offer_amount'):
+        # It's a ConversationModel (Pydantic)
+        price = listing_item.offer_amount or 'Unknown'
+        url = listing_item.conversation_url or 'No URL'
+        product = listing_item.product_name or 'Unknown Product'
+    elif isinstance(listing_item, dict):
+        # It's a dictionary
+        price = listing_item.get('offer_price', listing_item.get('offer_amount', 'Unknown'))
+        url = listing_item.get('url', listing_item.get('conversation_url', 'No URL'))
+        product = listing_item.get('product_name', 'Unknown Product')
+    else:
+        price = 'Unknown'
+        url = 'No URL'
+        product = 'Unknown Product'
+
     seller = seller_name or "Unknown Seller"
-    url = listing_item.get('url', 'No URL')
-    
+
     # Truncate long messages for subject, but keep full message in body
     truncated_message = last_seller_message[:100] + "..." if len(last_seller_message) > 100 else last_seller_message
-    
+
     subject = f"🤖 AGENT HELP NEEDED - {seller} (${price})"
-    
+
     message = f"""Agent Needs Human Intervention
 
-Item: iPhone 13 Pro Max - ${price}
+Item: {product} - ${price}
 Seller: {seller}
 Issue: {issue_description}
 Time: {datetime.now().strftime('%I:%M %p on %m/%d/%Y')}
@@ -131,7 +160,7 @@ Last message from seller:
 Link to conversation: {url}
 
 Please review the conversation and take appropriate action. The agent was unable to handle this situation automatically."""
-    
+
     return send_email(subject, message, email_address)
 
 def test_email_system(email_address=None):
